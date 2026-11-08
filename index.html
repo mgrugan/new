@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Econ 100 Study Hub</title>
+<style>
+  :root {
+    --bg: #f7f7f4; --card: #ffffff; --ink: #1d1f24; --muted: #5d6370;
+    --line: #e2e2dc; --accent: #2f5bd3; --accent-soft: #e7edfc;
+    --good: #1f8a4c; --good-soft: #e3f4ea; --bad: #c0392b; --bad-soft: #fbe6e3;
+    --demand: #2f5bd3; --supply: #d9822b; --policy: #8e44ad;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --card: #1e2127; --ink: #e9eaee; --muted: #a0a6b2;
+      --line: #2f333b; --accent: #7c9cff; --accent-soft: #252d45;
+      --good: #4cc483; --good-soft: #1b3326; --bad: #ff7b6b; --bad-soft: #3a2220;
+      --demand: #7c9cff; --supply: #f0a659; --policy: #c38ee0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --card: #1e2127; --ink: #e9eaee; --muted: #a0a6b2;
+    --line: #2f333b; --accent: #7c9cff; --accent-soft: #252d45;
+    --good: #4cc483; --good-soft: #1b3326; --bad: #ff7b6b; --bad-soft: #3a2220;
+    --demand: #7c9cff; --supply: #f0a659; --policy: #c38ee0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0; }
+  nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  nav a { color: var(--ink); text-decoration: none; font-size: 14px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
+  nav a:hover { background: var(--accent-soft); border-color: var(--accent); }
+  section { padding: 32px 0 8px; }
+  h2 { font-size: 26px; margin: 0 0 4px; }
+  h3 { font-size: 18px; margin: 24px 0 8px; }
+  .lede { color: var(--muted); margin: 0 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin: 14px 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .video { aspect-ratio: 16/9; width: 100%; border: 0; border-radius: 8px; background: #000; }
+  .vcap { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .intuit { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+  ul { padding-left: 20px; } li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .sim { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 720px) { .sim { grid-template-columns: 1fr; } }
+  svg.graph { width: 100%; height: auto; background: var(--card); }
+  svg.graph text { fill: var(--muted); font-size: 12px; }
+  label { display: block; font-size: 14px; font-weight: 600; margin-top: 10px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .seg { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .seg button, .btn { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .seg button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .readout { font-size: 15px; background: var(--bg); border-radius: 8px; padding: 10px 12px; margin-top: 12px; }
+  .readout b { font-variant-numeric: tabular-nums; }
+  .q { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 12px 0; }
+  .q .qh { font-weight: 600; margin-bottom: 8px; }
+  .q .qn { color: var(--accent); margin-right: 6px; }
+  .opt { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; margin: 6px 0; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:disabled { cursor: default; }
+  .opt.right { background: var(--good-soft); border-color: var(--good); }
+  .opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+  .explain { display: none; margin-top: 8px; font-size: 15px; padding: 10px 12px; border-radius: 8px; background: var(--bg); }
+  .explain.show { display: block; }
+  .score { position: sticky; bottom: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  footer { color: var(--muted); font-size: 13px; padding: 30px 0 40px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Econ 100 Study Hub · L11–L13</h1>
+    <nav>
+      <a href="#l11">L11 Elasticity of Supply</a>
+      <a href="#l12">L12 Quotas</a>
+      <a href="#l13">L13 Ceilings &amp; Floors</a>
+      <a href="#quiz">Quiz (20)</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= L11 ================= -->
+<section id="l11">
+  <span class="tag">Lecture 11</span>
+  <h2>Elasticity of Supply</h2>
+  <p class="lede">How much quantity supplied responds when price changes, and why it matters for every market analysis.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">The idea in one sentence</h3>
+    <p><b>Price elasticity of supply = % change in quantity supplied ÷ % change in price.</b> It tells you how <i>flexible</i> producers are.</p>
+    <div class="intuit">💡 <b>Intuition:</b> Picture a bakery and a vineyard. If bread prices jump, the bakery can bake more tomorrow (elastic). If wine prices jump, the vineyard has to plant vines and wait years (inelastic). Elasticity of supply really comes down to <b>how easily can producers adjust?</b></div>
+    <table>
+      <tr><th>Value</th><th>Name</th><th>What it looks like</th></tr>
+      <tr><td>&gt; 1</td><td>Elastic</td><td>Flat-ish supply curve: small price change → big quantity change</td></tr>
+      <tr><td>&lt; 1</td><td>Inelastic</td><td>Steep supply curve: big price change → small quantity change</td></tr>
+      <tr><td>= 0</td><td>Perfectly inelastic</td><td>Vertical line: quantity is fixed (e.g., original Picasso paintings, seats in a stadium, beachfront land)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Determinants (what makes supply flexible?)</h3>
+    <ul>
+      <li><b>Ability to store inventory:</b> stored goods can be released when price rises.</li>
+      <li><b>Availability of inputs:</b> easy-to-get inputs mean easy expansion.</li>
+      <li><b>Spare capacity:</b> idle factories or machines make expansion easier.</li>
+      <li><b>Entry and exit:</b> if new sellers can enter quickly, supply is elastic.</li>
+      <li><b>Time:</b> the longer the time frame, the more elastic supply becomes.</li>
+    </ul>
+    <div class="intuit">🥚 <b>The egg example:</b> When egg prices spiked, <b>retail</b> orders went up 6× but <b>total</b> egg sales only rose 44%. Retailers could pull eggs away from wholesale buyers (bakeries, restaurants), which are a substitute in production, so retail supply was very elastic. Total supply depends on hens, and you can't grow hens overnight, so total supply was much more inelastic.</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎛️ Try it: why relative elasticity matters</h3>
+    <p class="lede" style="margin-bottom:8px">When <b>demand shifts</b>, you move along the <b>supply</b> curve, so supply elasticity decides the quantity change. When <b>supply shifts</b>, you move along the <b>demand</b> curve.</p>
+    <div class="sim">
+      <svg class="graph" id="elasGraph" viewBox="0 0 400 320" role="img" aria-label="Supply and demand graph showing a demand shift"></svg>
+      <div>
+        <label>Supply curve is…</label>
+        <div class="seg" id="elasSeg">
+          <button data-v="steep" class="on">Inelastic (steep)</button>
+          <button data-v="flat">Elastic (flat)</button>
+        </div>
+        <label for="shift">Demand falls by: <span id="shiftVal">20</span> units</label>
+        <input type="range" id="shift" min="0" max="40" value="20">
+        <div class="readout" id="elasOut"></div>
+        <p class="vcap">Lecture link: with inelastic demand and elastic supply (the heroin market), shifting <i>demand</i> changes quantity a lot. Cutting <i>supply</i> mostly just raises the price.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>📺 Videos</h3>
+  <div class="grid">
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/NyV_SHgA4Dc" title="Price Elasticity of Supply and its Determinants" allowfullscreen loading="lazy"></iframe><div class="vcap">Price Elasticity of Supply &amp; its Determinants</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/3kr5eg-AiP0" title="Elasticity of Supply Explained" allowfullscreen loading="lazy"></iframe><div class="vcap">Elasticity of Supply Explained (diagrams)</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/z3h0cNg0KxM" title="How to Calculate Price Elasticity of Supply" allowfullscreen loading="lazy"></iframe><div class="vcap">How to calculate PES (step by step)</div></div>
+  </div>
+</section>
+
+<!-- ================= L12 ================= -->
+<section id="l12">
+  <span class="tag">Lecture 12</span>
+  <h2>Government Policy: Quantity Regulations</h2>
+  <p class="lede">Governments step into markets with quantity rules, price ceilings, price floors, taxes and subsidies. This lecture covers quantity rules.</p>
+
+  <div class="card">
+    <table>
+      <tr><th>Policy</th><th>What it does</th><th>Binding when…</th></tr>
+      <tr><td><b>Quota</b> (maximum quantity)</td><td>Caps how much can be sold</td><td>The cap is <b>below</b> the equilibrium quantity</td></tr>
+      <tr><td><b>Mandate</b> (minimum quantity)</td><td>Requires at least some amount (e.g., required car insurance, ethanol in gasoline)</td><td>The minimum is <b>above</b> the equilibrium quantity</td></tr>
+    </table>
+    <div class="intuit">💡 <b>"Binding" just means "it actually changes something."</b> A speed limit of 200 mph doesn't bind anyone. A quota of 25,000 taxis when only 20,000 would operate anyway also binds no one.</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🚕 NYC Taxi Medallions (Haas Act, 1937)</h3>
+    <ul>
+      <li>Medallions capped at 11,787 (today 13,857). Originally cost about $10.</li>
+      <li><b>Goals:</b> support driver incomes after the Depression and cut congestion.</li>
+      <li>In the lecture example, equilibrium is $15/ride with 20,000 taxis. A 25,000 quota is <b>not binding</b>. A 12,000 quota <b>is binding</b>.</li>
+      <li>A binding quota → fewer rides → <b>higher price</b>. The gap between what riders will pay and drivers' cost is a <b>quota rent</b>, and that rent is what makes the <b>medallion valuable</b> (they sold for about $1M at the peak).</li>
+      <li><b>Population grows</b> → demand rises, quantity can't → price and medallion value rise even more.</li>
+      <li><b>Uber arrives</b> → a substitute → taxi demand falls → price and medallion value <b>crash</b>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎛️ Try it: quota simulator</h3>
+    <div class="sim">
+      <svg class="graph" id="quotaGraph" viewBox="0 0 400 320" role="img" aria-label="Quota graph"></svg>
+      <div>
+        <label for="quota">Quota (max number of taxis): <span id="quotaVal">12,000</span></label>
+        <input type="range" id="quota" min="6000" max="30000" step="1000" value="12000">
+        <div class="readout" id="quotaOut"></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📺 Videos</h3>
+  <div class="grid">
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/gzhuXZeqAJc" title="Intro Econ: Quotas" allowfullscreen loading="lazy"></iframe><div class="vcap">Intro Econ: Quotas</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/D2tnwcpUFVY" title="Quantity Controls and Deadweight Loss" allowfullscreen loading="lazy"></iframe><div class="vcap">Quantity controls (quotas) &amp; deadweight loss</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/rFYFTM2o6sA" title="New York taxi medallions sell for $1m" allowfullscreen loading="lazy"></iframe><div class="vcap">Real world: NYC taxi medallions sell for $1M</div></div>
+  </div>
+</section>
+
+<!-- ================= L13 ================= -->
+<section id="l13">
+  <span class="tag">Lecture 13</span>
+  <h2>Price Ceilings &amp; Price Floors</h2>
+  <p class="lede">Legal maximum and minimum prices: rent control, milk prices and the minimum wage.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-top:0">⬇️ Price Ceiling (maximum price)</h3>
+      <ul>
+        <li>Binding only if set <b>below</b> equilibrium.</li>
+        <li>Result: <b>shortage</b> (Qd &gt; Qs).</li>
+        <li>Example: <b>rent control</b>. The goal is affordable housing.</li>
+        <li>Unintended effects: fewer apartments, lower quality and upkeep, waiting lists, people staying put, black markets, and benefits that go to whoever already holds a unit.</li>
+        <li>NYC data: the <b>wealthiest</b> renters saved 39% and the poorest saved 15% (2019 WSJ).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⬆️ Price Floor (minimum price)</h3>
+      <ul>
+        <li>Binding only if set <b>above</b> equilibrium.</li>
+        <li>Result: <b>surplus</b> (Qs &gt; Qd).</li>
+        <li>Examples: <b>milk</b> (PA $4.28, ME $4.06) and the <b>minimum wage</b> ($7.25 federal).</li>
+        <li>In the labor market a surplus of labor = <b>unemployment</b>.</li>
+        <li>But <b>Card &amp; Krueger (1994)</b> found that NJ's minimum wage increase did <b>not</b> reduce fast-food jobs compared with PA (Nobel 2021).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="intuit">💡 <b>Memory trick:</b> A <b>ceiling</b> is above your head, but it only matters if it's <b>low</b> enough to hit you, so it binds below equilibrium. A <b>floor</b> is under your feet, but it only matters if it's <b>high</b> enough to push you up, so it binds above equilibrium. Ceilings cause shortages and floors cause surpluses.</div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🎛️ Try it: drag the legal price</h3>
+    <div class="sim">
+      <svg class="graph" id="pcGraph" viewBox="0 0 400 320" role="img" aria-label="Price control graph"></svg>
+      <div>
+        <label>Policy type</label>
+        <div class="seg" id="pcSeg">
+          <button data-v="ceiling" class="on">Price ceiling</button>
+          <button data-v="floor">Price floor</button>
+        </div>
+        <label for="pc">Legal price: $<span id="pcVal">20</span></label>
+        <input type="range" id="pc" min="5" max="55" value="20">
+        <div class="readout" id="pcOut"></div>
+        <p class="vcap">Equilibrium is $30 with 40 units. Try a ceiling above $30 or a floor below $30, and notice that nothing changes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">🤔 Why might the minimum wage not cut jobs?</h3>
+    <ul>
+      <li><b>Monopsony:</b> when a few employers dominate a local labor market, they pay below the competitive wage. A minimum wage can then <i>raise</i> employment.</li>
+      <li><b>Lower turnover:</b> better-paid workers quit less, which saves hiring and training costs.</li>
+      <li><b>Higher productivity and morale</b> (efficiency wages).</li>
+      <li><b>Inelastic labor demand:</b> firms may pass costs on to prices instead of cutting staff.</li>
+    </ul>
+    <p><b>Real vs nominal:</b> $7.25 hasn't changed since 2009 in <i>nominal</i> dollars, but inflation means its <i>real</i> value keeps falling. If it had tracked productivity after 1968, it would be about $21.50. Today it sits below the 2-person poverty-level wage ($9.16).</p>
+  </div>
+
+  <h3>📺 Videos</h3>
+  <div class="grid">
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/a2iKaTqgrxs" title="Price Ceiling and Price Floor" allowfullscreen loading="lazy"></iframe><div class="vcap">Price Ceiling &amp; Price Floor (graphs + examples)</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/ZvN9NdIAOwY" title="Price Ceilings, Price Floors, and Deadweight Loss" allowfullscreen loading="lazy"></iframe><div class="vcap">Ceilings, floors &amp; deadweight loss</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/hMkvmZK3AJ4" title="Price Ceilings: Rent Controls" allowfullscreen loading="lazy"></iframe><div class="vcap">Rent control: shortages, quality, misallocation</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/xkL45zctzJM" title="The minimum wage: economic theory" allowfullscreen loading="lazy"></iframe><div class="vcap">The minimum wage: economic theory</div></div>
+    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/D1q8naOS1hw" title="Minimum Wage and Price Floors" allowfullscreen loading="lazy"></iframe><div class="vcap">Minimum wage as a price floor</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <span class="tag">Practice</span>
+  <h2>20 Practice Questions</h2>
+  <p class="lede">Click an answer to get instant feedback and an explanation. Filter by lecture or reset to try again.</p>
+  <div class="filters" id="filters">
+    <button class="btn primary" data-f="all">All</button>
+    <button class="btn" data-f="L11">L11</button>
+    <button class="btn" data-f="L12">L12</button>
+    <button class="btn" data-f="L13">L13</button>
+  </div>
+  <div id="questions"></div>
+  <div class="score">
+    <span id="scoreText">Score: 0 / 0 answered</span>
+    <button class="btn" id="resetBtn">Reset quiz</button>
+  </div>
+</section>
+
+<footer>Built from the Econ 100 lectures (Treado, Pitt): L11 Elasticity of Supply, L12 Government Policy, L13 Price Regulations. Videos are third-party YouTube content.</footer>
+</main>
+
+<script>
+/* ---------- tiny SVG helpers ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  return e;
+}
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+// plot area: x 50..380, y 20..280 ; Q 0..80, P 0..60
+function mkScale(qMax, pMax) {
+  return { x: q => 50 + (q / qMax) * 330, y: p => 280 - (p / pMax) * 260 };
+}
+function axes(svg, s, qLabel, pLabel) {
+  svg.appendChild(el("line", { x1: 50, y1: 280, x2: 385, y2: 280, stroke: css("--muted") }));
+  svg.appendChild(el("line", { x1: 50, y1: 15, x2: 50, y2: 280, stroke: css("--muted") }));
+  svg.appendChild(el("text", { x: 380, y: 300, "text-anchor": "end" }, qLabel));
+  svg.appendChild(el("text", { x: 12, y: 18 }, pLabel));
+}
+function line(svg, x1, y1, x2, y2, color, extra = {}) {
+  svg.appendChild(el("line", Object.assign({ x1, y1, x2, y2, stroke: color, "stroke-width": 2.5, "stroke-linecap": "round" }, extra)));
+}
+function dot(svg, x, y, color) { svg.appendChild(el("circle", { cx: x, cy: y, r: 4.5, fill: color })); }
+function label(svg, x, y, t, color, anchor = "start") {
+  const e = el("text", { x, y, "text-anchor": anchor }, t);
+  e.style.fill = color; e.style.fontWeight = "600"; svg.appendChild(e);
+}
+
+/* ---------- L11 elasticity sim ---------- */
+// Demand: P = 60 - 0.75Q  (Q = (60-P)/0.75). Supply passes through (40,30).
+let elasMode = "steep";
+function drawElas() {
+  const svg = document.getElementById("elasGraph"); svg.innerHTML = "";
+  const s = mkScale(80, 60);
+  axes(svg, s, "Quantity", "Price");
+  const shift = +document.getElementById("shift").value;
+  document.getElementById("shiftVal").textContent = shift;
+  const b = elasMode === "steep" ? 2.0 : 0.25; // supply slope: P = 30 + b(Q-40)
+  const dA = 60, dB = 0.75;
+  const Sp = q => 30 + b * (q - 40);
+  // supply line endpoints clipped to price 0..60
+  const qLo = Math.max(0, 40 - 30 / b), qHi = Math.min(80, 40 + 30 / b);
+  line(svg, s.x(qLo), s.y(Sp(qLo)), s.x(qHi), s.y(Sp(qHi)), css("--supply"));
+  label(svg, s.x(qHi) - 4, s.y(Sp(qHi)) - 6, "S", css("--supply"), "end");
+  // original demand
+  line(svg, s.x(0), s.y(dA), s.x(80), s.y(dA - dB * 80), css("--demand"), { opacity: shift ? 0.35 : 1 });
+  label(svg, s.x(4), s.y(dA) + 14, "D₁", css("--demand"));
+  // new demand: shifted left by `shift` units: P = 60 - 0.75(Q + shift)
+  const d2 = q => dA - dB * (q + shift);
+  if (shift) {
+    line(svg, s.x(0), s.y(d2(0)), s.x(80 - shift), s.y(d2(80 - shift)), css("--demand"), { "stroke-dasharray": "6 4" });
+    label(svg, s.x(80 - shift) - 6, s.y(d2(80 - shift)) - 8, "D₂", css("--demand"), "end");
+  }
+  // equilibria
+  dot(svg, s.x(40), s.y(30), css("--ink"));
+  // solve 60 - 0.75(Q+shift) = 30 + b(Q-40)
+  const q2 = (60 - 0.75 * shift - 30 + 40 * b) / (0.75 + b);
+  const p2 = Sp(q2);
+  if (shift) {
+    dot(svg, s.x(q2), s.y(p2), css("--policy"));
+    svg.appendChild(el("line", { x1: s.x(q2), y1: s.y(p2), x2: s.x(q2), y2: 280, stroke: css("--policy"), "stroke-dasharray": "3 3" }));
+    svg.appendChild(el("line", { x1: 50, y1: s.y(p2), x2: s.x(q2), y2: s.y(p2), stroke: css("--policy"), "stroke-dasharray": "3 3" }));
+  }
+  const dq = q2 - 40, dp = p2 - 30;
+  document.getElementById("elasOut").innerHTML =
+    `Price: $30 → <b>$${p2.toFixed(2)}</b> (${dp.toFixed(2)})<br>Quantity: 40 → <b>${q2.toFixed(1)}</b> (${dq.toFixed(1)})<br>` +
+    (shift ? (elasMode === "steep"
+      ? "With <b>inelastic</b> supply, the price absorbs most of the change and quantity barely moves."
+      : "With <b>elastic</b> supply, quantity absorbs most of the change and price barely moves.") : "Move the slider to shift demand.");
+}
+document.getElementById("shift").addEventListener("input", drawElas);
+document.querySelectorAll("#elasSeg button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#elasSeg button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); elasMode = b.dataset.v; drawElas();
+});
+
+/* ---------- L12 quota sim ---------- */
+// Taxi market (thousands). Demand: P = 35 - 1.0Q ; Supply: P = -5 + 1.0Q -> eq Q=20, P=15
+function drawQuota() {
+  const svg = document.getElementById("quotaGraph"); svg.innerHTML = "";
+  const s = mkScale(36, 36);
+  axes(svg, s, "Taxis (thousands)", "Price ($/ride)");
+  const quota = +document.getElementById("quota").value / 1000;
+  document.getElementById("quotaVal").textContent = (quota * 1000).toLocaleString();
+  const D = q => 35 - q, S = q => -5 + q;
+  line(svg, s.x(0), s.y(35), s.x(35), s.y(0), css("--demand")); label(svg, s.x(33), s.y(2) - 6, "D", css("--demand"), "end");
+  line(svg, s.x(5), s.y(0), s.x(36), s.y(31), css("--supply")); label(svg, s.x(36) - 4, s.y(31) - 6, "S", css("--supply"), "end");
+  line(svg, s.x(quota), s.y(0), s.x(quota), s.y(36), css("--policy"), { "stroke-dasharray": "6 4" });
+  label(svg, s.x(quota) + 4, s.y(34), "Quota", css("--policy"));
+  const out = document.getElementById("quotaOut");
+  if (quota >= 20) {
+    dot(svg, s.x(20), s.y(15), css("--ink"));
+    out.innerHTML = `<b>Not binding.</b> The market would only supply 20,000 taxis anyway.<br>Price stays <b>$15</b>; medallion value ≈ <b>$0</b>.`;
+  } else {
+    const pd = D(quota), ps = S(quota);
+    // quota rent rectangle
+    svg.appendChild(el("rect", { x: 50, y: s.y(pd), width: s.x(quota) - 50, height: s.y(ps) - s.y(pd), fill: css("--policy"), opacity: 0.18 }));
+    // deadweight loss triangle
+    svg.appendChild(el("polygon", { points: `${s.x(quota)},${s.y(pd)} ${s.x(20)},${s.y(15)} ${s.x(quota)},${s.y(ps)}`, fill: css("--bad"), opacity: 0.25 }));
+    dot(svg, s.x(quota), s.y(pd), css("--policy"));
+    out.innerHTML = `<b>Binding!</b> Only ${(quota * 1000).toLocaleString()} taxis allowed.<br>Riders pay <b>$${pd.toFixed(0)}</b>/ride (up from $15).<br>Drivers' cost of the last ride: $${Math.max(ps, 0).toFixed(0)}.<br>Quota rent per ride: <b>$${(pd - Math.max(ps, 0)).toFixed(0)}</b>. That's why medallions become valuable.<br><span style="color:var(--bad)">Red triangle</span> = deadweight loss (rides that would have helped both sides but don't happen).`;
+  }
+}
+document.getElementById("quota").addEventListener("input", drawQuota);
+
+/* ---------- L13 price control sim ---------- */
+// Demand: Qd = 100 - 2P ; Supply: Qs = 2P - 20 ; eq P=30, Q=40
+let pcMode = "ceiling";
+function drawPC() {
+  const svg = document.getElementById("pcGraph"); svg.innerHTML = "";
+  const s = mkScale(90, 60);
+  axes(svg, s, "Quantity", "Price");
+  const p = +document.getElementById("pc").value;
+  document.getElementById("pcVal").textContent = p;
+  line(svg, s.x(0), s.y(50), s.x(90), s.y(5), css("--demand")); label(svg, s.x(88), s.y(5) - 8, "D", css("--demand"), "end");
+  line(svg, s.x(0), s.y(10), s.x(90), s.y(55), css("--supply")); label(svg, s.x(88), s.y(55) + 16, "S", css("--supply"), "end");
+  dot(svg, s.x(40), s.y(30), css("--ink"));
+  line(svg, 50, s.y(p), 385, s.y(p), css("--policy"), { "stroke-dasharray": "6 4" });
+  label(svg, 384, s.y(p) - 6, pcMode === "ceiling" ? "Ceiling" : "Floor", css("--policy"), "end");
+  const qd = Math.max(0, 100 - 2 * p), qs = Math.max(0, 2 * p - 20);
+  const out = document.getElementById("pcOut");
+  const binding = pcMode === "ceiling" ? p < 30 : p > 30;
+  if (!binding) {
+    out.innerHTML = `<b>Not binding.</b> A ${pcMode} at $${p} is ${pcMode === "ceiling" ? "above" : "below"} equilibrium ($30), so the market stays at <b>$30, 40 units</b>.`;
+    return;
+  }
+  dot(svg, s.x(qd), s.y(p), css("--demand")); dot(svg, s.x(qs), s.y(p), css("--supply"));
+  const a = Math.min(qd, qs), b = Math.max(qd, qs);
+  svg.appendChild(el("rect", { x: s.x(a), y: s.y(p) - 6, width: s.x(b) - s.x(a), height: 12, fill: pcMode === "ceiling" ? css("--bad") : css("--supply"), opacity: 0.3, rx: 3 }));
+  const traded = Math.min(qd, qs);
+  if (pcMode === "ceiling") {
+    out.innerHTML = `<b>Binding ceiling → SHORTAGE.</b><br>Quantity demanded: <b>${qd}</b><br>Quantity supplied: <b>${qs}</b><br>Shortage: <b>${qd - qs} units</b><br>Only ${traded} units actually trade (fewer than 40!). Think rent control: more people want apartments, but fewer get built and rented out.`;
+  } else {
+    out.innerHTML = `<b>Binding floor → SURPLUS.</b><br>Quantity supplied: <b>${qs}</b><br>Quantity demanded: <b>${qd}</b><br>Surplus: <b>${qs - qd} units</b><br>Only ${traded} units actually sell. In the labor market, this surplus = unemployment (in the basic model).`;
+  }
+}
+document.getElementById("pc").addEventListener("input", drawPC);
+document.querySelectorAll("#pcSeg button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#pcSeg button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); pcMode = b.dataset.v;
+  document.getElementById("pc").value = pcMode === "ceiling" ? 20 : 40; drawPC();
+});
+
+/* ---------- Quiz ---------- */
+const Q = [
+  { l: "L11", q: "The price elasticity of supply measures…", o: ["How much quantity demanded responds to income", "How much quantity supplied responds to a change in price", "How much price responds to a change in supply", "How much supply shifts when input costs change"], a: 1, e: "PES = % change in quantity supplied ÷ % change in price. It measures how responsive producers are to price." },
+  { l: "L11", q: "Price rises 10% and quantity supplied rises 25%. Supply is…", o: ["Elastic (2.5)", "Inelastic (0.4)", "Unit elastic (1)", "Perfectly inelastic (0)"], a: 0, e: "25% ÷ 10% = 2.5 > 1, so supply is elastic. Producers respond more than proportionally." },
+  { l: "L11", q: "Which product most likely has the MOST inelastic supply in the short run?", o: ["T-shirts", "Smartphone apps", "Beachfront land", "Pizza"], a: 2, e: "The amount of beachfront land is essentially fixed. No matter the price, you can't make more, so supply is close to perfectly inelastic (vertical)." },
+  { l: "L11", q: "Supply generally becomes MORE elastic when…", o: ["Producers have less time to adjust", "Inputs become harder to find", "Firms can easily enter and exit the market", "Goods cannot be stored"], a: 2, e: "Easy entry/exit, more time, available inputs, spare capacity and the ability to store inventory all make supply more elastic." },
+  { l: "L11", q: "When egg prices spiked, retail egg orders rose 6× but total egg sales rose only 44%. Why was retail supply so much more elastic?", o: ["Hens laid more eggs at higher prices", "Sellers could shift eggs from wholesale buyers (a substitute in production) to retail", "Consumers stopped buying eggs", "The government subsidized retail eggs"], a: 1, e: "Retailers pulled eggs away from wholesale uses (bakeries, restaurants). Total supply is limited by the number of hens, which can't grow quickly, so total supply is far less elastic." },
+  { l: "L11", q: "Demand is relatively MORE elastic than supply. If demand decreases, the market mostly sees…", o: ["A large drop in quantity, small drop in price", "A large drop in price, smaller drop in quantity", "No change in price", "An increase in quantity"], a: 1, e: "A demand shift moves you along the SUPPLY curve. Since supply is relatively inelastic (steep), the price falls a lot and quantity falls less. In the lecture example, a $5 drop came with only −10 units." },
+  { l: "L11", q: "Demand is inelastic and supply is elastic. Demand decreases and price falls 10%. Quantity will…", o: ["Decrease by exactly 10%", "Decrease by more than 10%", "Decrease by less than 10%", "Increase"], a: 1, e: "Moving along an elastic supply curve (elasticity > 1), a 10% price drop produces a MORE than 10% drop in quantity supplied." },
+  { l: "L11", q: "The heroin market has inelastic demand and relatively elastic supply. Which policy most effectively reduces equilibrium QUANTITY?", o: ["Longer prison terms for sellers", "Increased border controls on imports", "Subsidizing rehab and anti-drug education (reducing demand)", "Higher fines for dealers"], a: 2, e: "Supply-side policies shift supply left along an INELASTIC demand curve, so the price rises a lot, quantity barely falls and dealer revenue (and crime) can go up. Shifting demand left moves along the ELASTIC supply curve, so quantity falls a lot." },
+  { l: "L12", q: "A quota (maximum quantity) is binding when it is set…", o: ["Above the equilibrium quantity", "Below the equilibrium quantity", "Equal to the equilibrium price", "Above the equilibrium price"], a: 1, e: "A cap only matters if it stops the market from reaching the quantity it would choose on its own, so it binds when set below equilibrium quantity." },
+  { l: "L12", q: "The NYC taxi market equilibrium is 20,000 taxis at $15/ride. Which quota is binding?", o: ["25,000 medallions", "20,000 medallions", "12,000 medallions", "30,000 medallions"], a: 2, e: "12,000 < 20,000 limits the market. A 25,000 cap is above equilibrium and changes nothing." },
+  { l: "L12", q: "A binding taxi quota causes the price of a ride to ___ and makes medallions ___.", o: ["Fall; worthless", "Rise; valuable", "Rise; worthless", "Stay the same; valuable"], a: 1, e: "Fewer taxis means riders compete for rides, so the price rises above drivers' cost. That gap (quota rent) is captured by whoever owns the right to operate, so medallions become valuable." },
+  { l: "L12", q: "With a binding medallion quota in place, ride-sharing apps like Uber enter the market. What happens to medallion values?", o: ["They rise because taxis are scarcer", "They fall because demand for taxi rides decreases", "No change, since the quota is fixed", "They rise because Uber increases total demand"], a: 1, e: "Uber is a substitute, so demand for taxi rides shifts left. The price and quota rent shrink, and medallion values collapse (which is what actually happened in NYC)." },
+  { l: "L12", q: "Requiring all drivers to carry car insurance is an example of…", o: ["A quota", "A price ceiling", "A minimum quantity regulation (mandate)", "A subsidy"], a: 2, e: "Mandates set a minimum quantity that must be bought. They bind when the required amount is above what the market would choose." },
+  { l: "L13", q: "A price ceiling is binding when it is set…", o: ["Above the equilibrium price", "Below the equilibrium price", "At the equilibrium price", "Above the equilibrium quantity"], a: 1, e: "A ceiling is a maximum. It only matters if it forces price below where the market would settle." },
+  { l: "L13", q: "A binding price ceiling creates a…", o: ["Surplus", "Shortage", "Higher equilibrium quantity", "Higher price"], a: 1, e: "At the lower legal price, quantity demanded rises and quantity supplied falls, so Qd > Qs, a shortage." },
+  { l: "L13", q: "Which is an UNINTENDED consequence of rent control?", o: ["Lower rents for people in controlled units", "Reduced supply and lower quality of rental housing", "More affordable housing for some tenants", "Rent stability for current tenants"], a: 1, e: "Landlords build fewer units, convert to condos and spend less on maintenance. The others listed are the intended goals." },
+  { l: "L13", q: "According to the 2019 WSJ study on NYC rent control, who saved the most?", o: ["Poorest renters (39%)", "Wealthiest renters (39%)", "Middle-income renters", "Everyone saved equally"], a: 1, e: "The wealthiest renters saved about 39% vs about 15% for the poorest. Rent-controlled units aren't targeted by income, so whoever gets and keeps one benefits." },
+  { l: "L13", q: "Pennsylvania sets a minimum milk price of $4.28 above the market equilibrium. This creates…", o: ["A shortage of milk", "A surplus of milk", "No effect", "Lower prices for consumers"], a: 1, e: "A binding price floor means Qs > Qd, a surplus. The goal is to support dairy farmers, but consumers pay more." },
+  { l: "L13", q: "In the basic supply-and-demand model, a binding minimum wage causes…", o: ["A shortage of workers", "Unemployment (a surplus of labor)", "Higher employment", "No change in employment"], a: 1, e: "The minimum wage is a price floor in the labor market. Above equilibrium, more people want to work (Qs↑) and firms hire fewer (Qd↓), which creates a labor surplus = unemployment." },
+  { l: "L13", q: "Card & Krueger compared fast-food jobs in NJ (which raised its minimum wage) and PA (which didn't). What did they find, and why might it happen?", o: ["Big job losses in NJ, as the basic model predicts", "No significant employment drop, possibly because employers have market power (monopsony)", "PA lost more jobs than NJ due to inflation", "NJ jobs doubled because wages rose"], a: 1, e: "They found no negative employment effect. Explanations include monopsony (employers pay below the competitive wage), lower turnover and higher productivity. Card won the 2021 Nobel Prize partly for this work." }
+];
+
+let answered = {}, filter = "all";
+function renderQuiz() {
+  const box = document.getElementById("questions"); box.innerHTML = "";
+  Q.forEach((item, i) => {
+    if (filter !== "all" && item.l !== filter) return;
+    const d = document.createElement("div"); d.className = "q";
+    d.innerHTML = `<div class="qh"><span class="qn">Q${i + 1} · ${item.l}</span>${item.q}</div>`;
+    item.o.forEach((opt, j) => {
+      const b = document.createElement("button"); b.className = "opt"; b.textContent = String.fromCharCode(65 + j) + ". " + opt;
+      if (answered[i] != null) {
+        b.disabled = true;
+        if (j === item.a) b.classList.add("right");
+        else if (j === answered[i]) b.classList.add("wrong");
+      }
+      b.onclick = () => { answered[i] = j; renderQuiz(); };
+      d.appendChild(b);
+    });
+    const ex = document.createElement("div"); ex.className = "explain" + (answered[i] != null ? " show" : "");
+    if (answered[i] != null) ex.innerHTML = (answered[i] === item.a ? "✅ <b>Correct.</b> " : "❌ <b>Not quite.</b> ") + item.e;
+    d.appendChild(ex); box.appendChild(d);
+  });
+  const keys = Object.keys(answered);
+  const right = keys.filter(k => answered[k] === Q[k].a).length;
+  document.getElementById("scoreText").innerHTML = `Score: <b>${right}</b> / ${keys.length} answered (of 20)`;
+}
+document.querySelectorAll("#filters button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#filters button").forEach(x => x.classList.remove("primary"));
+  b.classList.add("primary"); filter = b.dataset.f; renderQuiz();
+});
+document.getElementById("resetBtn").onclick = () => { answered = {}; renderQuiz(); };
+
+function drawAll() { drawElas(); drawQuota(); drawPC(); }
+drawAll(); renderQuiz();
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawAll);
+</script>
+</body>
+</html>
