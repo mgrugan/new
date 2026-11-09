@@ -9,485 +9,802 @@
     --bg: #f7f7f4; --card: #ffffff; --ink: #1d1f24; --muted: #5d6370;
     --line: #e2e2dc; --accent: #2f5bd3; --accent-soft: #e7edfc;
     --good: #1f8a4c; --good-soft: #e3f4ea; --bad: #c0392b; --bad-soft: #fbe6e3;
-    --demand: #2f5bd3; --supply: #d9822b; --policy: #8e44ad;
+    --c-d: #2f5bd3; --c-s: #d9822b; --c-x: #c0392b; --c-b: #1f8a4c; --c-p: #8e44ad; --c-k: #1d1f24; --c-m: #8a909c;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #15171b; --card: #1e2127; --ink: #e9eaee; --muted: #a0a6b2;
       --line: #2f333b; --accent: #7c9cff; --accent-soft: #252d45;
       --good: #4cc483; --good-soft: #1b3326; --bad: #ff7b6b; --bad-soft: #3a2220;
-      --demand: #7c9cff; --supply: #f0a659; --policy: #c38ee0;
+      --c-d: #7c9cff; --c-s: #f0a659; --c-x: #ff7b6b; --c-b: #4cc483; --c-p: #c38ee0; --c-k: #e9eaee; --c-m: #7d8492;
     }
   }
   :root[data-theme="dark"] {
     --bg: #15171b; --card: #1e2127; --ink: #e9eaee; --muted: #a0a6b2;
     --line: #2f333b; --accent: #7c9cff; --accent-soft: #252d45;
     --good: #4cc483; --good-soft: #1b3326; --bad: #ff7b6b; --bad-soft: #3a2220;
-    --demand: #7c9cff; --supply: #f0a659; --policy: #c38ee0;
+    --c-d: #7c9cff; --c-s: #f0a659; --c-x: #ff7b6b; --c-b: #4cc483; --c-p: #c38ee0; --c-k: #e9eaee; --c-m: #7d8492;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink);
     font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
   header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
-  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+  .hrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0 6px; flex-wrap: wrap; }
   header h1 { font-size: 18px; margin: 0; }
-  nav { display: flex; gap: 6px; flex-wrap: wrap; }
-  nav a { color: var(--ink); text-decoration: none; font-size: 14px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
-  nav a:hover { background: var(--accent-soft); border-color: var(--accent); }
-  section { padding: 32px 0 8px; }
+  #overall { font-size: 14px; color: var(--muted); }
+  #overall b { color: var(--ink); }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 10px; scrollbar-width: thin; }
+  .tabs button { flex: 0 0 auto; font: inherit; font-size: 14px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tabs .mini { font-size: 12px; opacity: .8; margin-left: 4px; }
+  section { padding: 24px 0 8px; }
   h2 { font-size: 26px; margin: 0 0 4px; }
-  h3 { font-size: 18px; margin: 24px 0 8px; }
-  .lede { color: var(--muted); margin: 0 0 16px; }
+  h3 { font-size: 18px; margin: 22px 0 8px; }
+  .lede { color: var(--muted); margin: 0 0 14px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin: 14px 0; }
-  .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-  .video { aspect-ratio: 16/9; width: 100%; border: 0; border-radius: 8px; background: #000; }
-  .vcap { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .card > h3:first-child { margin-top: 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
   .intuit { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; }
-  ul { padding-left: 20px; } li { margin: 4px 0; }
+  ul, ol { padding-left: 22px; } li { margin: 4px 0; }
   table { border-collapse: collapse; width: 100%; font-size: 15px; }
-  th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+  th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
   th { color: var(--muted); font-weight: 600; }
-  .sim { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tblwrap { overflow-x: auto; }
+  .fig { margin: 8px 0; }
+  .fig svg { width: 100%; max-width: 520px; height: auto; display: block; }
+  .fig svg text { fill: var(--muted); font-size: 12px; font-family: inherit; }
+  .figcap { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .sim { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   @media (max-width: 720px) { .sim { grid-template-columns: 1fr; } }
-  svg.graph { width: 100%; height: auto; background: var(--card); }
-  svg.graph text { fill: var(--muted); font-size: 12px; }
   label { display: block; font-size: 14px; font-weight: 600; margin-top: 10px; }
   input[type=range] { width: 100%; accent-color: var(--accent); }
-  .seg { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  .seg button, .btn { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
-  .seg button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .readout { font-size: 15px; background: var(--bg); border-radius: 8px; padding: 10px 12px; margin-top: 12px; }
-  .readout b { font-variant-numeric: tabular-nums; }
+  .readout { font-size: 15px; background: var(--bg); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .vids { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .video { aspect-ratio: 16/9; width: 100%; border: 0; border-radius: 8px; background: #000; }
+  .vcap { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .goods { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 4px; font-size: 14px; max-width: 560px; }
+  .goods div { padding: 10px; border-radius: 6px; }
+  .goods .hd { font-weight: 700; color: var(--muted); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 13px; }
+  .goods .cell { background: var(--bg); border: 1px solid var(--line); }
+  .goods .cell b { display: block; color: var(--ink); }
+  .goods .cell span { color: var(--muted); font-size: 13px; }
   .q { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 12px 0; }
   .q .qh { font-weight: 600; margin-bottom: 8px; }
-  .q .qn { color: var(--accent); margin-right: 6px; }
+  .q .qn { color: var(--accent); margin-right: 6px; font-size: 14px; }
+  .q .kind { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: 6px; vertical-align: 2px; }
   .opt { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; margin: 6px 0; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
   .opt:hover:not(:disabled) { border-color: var(--accent); }
   .opt:disabled { cursor: default; }
   .opt.right { background: var(--good-soft); border-color: var(--good); }
   .opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
-  .explain { display: none; margin-top: 8px; font-size: 15px; padding: 10px 12px; border-radius: 8px; background: var(--bg); }
-  .explain.show { display: block; }
-  .score { position: sticky; bottom: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .explain { margin-top: 8px; font-size: 15px; padding: 10px 12px; border-radius: 8px; background: var(--bg); }
+  .scorebar { position: sticky; bottom: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 16px rgba(0,0,0,.08); margin-top: 16px; }
+  .btn { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .btn:hover { border-color: var(--accent); }
   footer { color: var(--muted); font-size: 13px; padding: 30px 0 40px; }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>Econ 100 Study Hub · L11–L13</h1>
-    <nav>
-      <a href="#l11">L11 Elasticity of Supply</a>
-      <a href="#l12">L12 Quotas</a>
-      <a href="#l13">L13 Ceilings &amp; Floors</a>
-      <a href="#quiz">Quiz (20)</a>
-    </nav>
+    <div class="hrow">
+      <h1>Econ 100 Study Hub · L17–L23</h1>
+      <span id="overall"></span>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
   </div>
 </header>
-
-<main class="wrap">
-
-<!-- ================= L11 ================= -->
-<section id="l11">
-  <span class="tag">Lecture 11</span>
-  <h2>Elasticity of Supply</h2>
-  <p class="lede">How much quantity supplied responds when price changes, and why it matters for every market analysis.</p>
-
-  <div class="card">
-    <h3 style="margin-top:0">The idea in one sentence</h3>
-    <p><b>Price elasticity of supply = % change in quantity supplied ÷ % change in price.</b> It tells you how <i>flexible</i> producers are.</p>
-    <div class="intuit">💡 <b>Intuition:</b> Picture a bakery and a vineyard. If bread prices jump, the bakery can bake more tomorrow (elastic). If wine prices jump, the vineyard has to plant vines and wait years (inelastic). Elasticity of supply really comes down to <b>how easily can producers adjust?</b></div>
-    <table>
-      <tr><th>Value</th><th>Name</th><th>What it looks like</th></tr>
-      <tr><td>&gt; 1</td><td>Elastic</td><td>Flat-ish supply curve: small price change → big quantity change</td></tr>
-      <tr><td>&lt; 1</td><td>Inelastic</td><td>Steep supply curve: big price change → small quantity change</td></tr>
-      <tr><td>= 0</td><td>Perfectly inelastic</td><td>Vertical line: quantity is fixed (e.g., original Picasso paintings, seats in a stadium, beachfront land)</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">Determinants (what makes supply flexible?)</h3>
-    <ul>
-      <li><b>Ability to store inventory:</b> stored goods can be released when price rises.</li>
-      <li><b>Availability of inputs:</b> easy-to-get inputs mean easy expansion.</li>
-      <li><b>Spare capacity:</b> idle factories or machines make expansion easier.</li>
-      <li><b>Entry and exit:</b> if new sellers can enter quickly, supply is elastic.</li>
-      <li><b>Time:</b> the longer the time frame, the more elastic supply becomes.</li>
-    </ul>
-    <div class="intuit">🥚 <b>The egg example:</b> When egg prices spiked, <b>retail</b> orders went up 6× but <b>total</b> egg sales only rose 44%. Retailers could pull eggs away from wholesale buyers (bakeries, restaurants), which are a substitute in production, so retail supply was very elastic. Total supply depends on hens, and you can't grow hens overnight, so total supply was much more inelastic.</div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🎛️ Try it: why relative elasticity matters</h3>
-    <p class="lede" style="margin-bottom:8px">When <b>demand shifts</b>, you move along the <b>supply</b> curve, so supply elasticity decides the quantity change. When <b>supply shifts</b>, you move along the <b>demand</b> curve.</p>
-    <div class="sim">
-      <svg class="graph" id="elasGraph" viewBox="0 0 400 320" role="img" aria-label="Supply and demand graph showing a demand shift"></svg>
-      <div>
-        <label>Supply curve is…</label>
-        <div class="seg" id="elasSeg">
-          <button data-v="steep" class="on">Inelastic (steep)</button>
-          <button data-v="flat">Elastic (flat)</button>
-        </div>
-        <label for="shift">Demand falls by: <span id="shiftVal">20</span> units</label>
-        <input type="range" id="shift" min="0" max="40" value="20">
-        <div class="readout" id="elasOut"></div>
-        <p class="vcap">Lecture link: with inelastic demand and elastic supply (the heroin market), shifting <i>demand</i> changes quantity a lot. Cutting <i>supply</i> mostly just raises the price.</p>
-      </div>
-    </div>
-  </div>
-
-  <h3>📺 Videos</h3>
-  <div class="grid">
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/NyV_SHgA4Dc" title="Price Elasticity of Supply and its Determinants" allowfullscreen loading="lazy"></iframe><div class="vcap">Price Elasticity of Supply &amp; its Determinants</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/3kr5eg-AiP0" title="Elasticity of Supply Explained" allowfullscreen loading="lazy"></iframe><div class="vcap">Elasticity of Supply Explained (diagrams)</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/z3h0cNg0KxM" title="How to Calculate Price Elasticity of Supply" allowfullscreen loading="lazy"></iframe><div class="vcap">How to calculate PES (step by step)</div></div>
-  </div>
-</section>
-
-<!-- ================= L12 ================= -->
-<section id="l12">
-  <span class="tag">Lecture 12</span>
-  <h2>Government Policy: Quantity Regulations</h2>
-  <p class="lede">Governments step into markets with quantity rules, price ceilings, price floors, taxes and subsidies. This lecture covers quantity rules.</p>
-
-  <div class="card">
-    <table>
-      <tr><th>Policy</th><th>What it does</th><th>Binding when…</th></tr>
-      <tr><td><b>Quota</b> (maximum quantity)</td><td>Caps how much can be sold</td><td>The cap is <b>below</b> the equilibrium quantity</td></tr>
-      <tr><td><b>Mandate</b> (minimum quantity)</td><td>Requires at least some amount (e.g., required car insurance, ethanol in gasoline)</td><td>The minimum is <b>above</b> the equilibrium quantity</td></tr>
-    </table>
-    <div class="intuit">💡 <b>"Binding" just means "it actually changes something."</b> A speed limit of 200 mph doesn't bind anyone. A quota of 25,000 taxis when only 20,000 would operate anyway also binds no one.</div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🚕 NYC Taxi Medallions (Haas Act, 1937)</h3>
-    <ul>
-      <li>Medallions capped at 11,787 (today 13,857). Originally cost about $10.</li>
-      <li><b>Goals:</b> support driver incomes after the Depression and cut congestion.</li>
-      <li>In the lecture example, equilibrium is $15/ride with 20,000 taxis. A 25,000 quota is <b>not binding</b>. A 12,000 quota <b>is binding</b>.</li>
-      <li>A binding quota → fewer rides → <b>higher price</b>. The gap between what riders will pay and drivers' cost is a <b>quota rent</b>, and that rent is what makes the <b>medallion valuable</b> (they sold for about $1M at the peak).</li>
-      <li><b>Population grows</b> → demand rises, quantity can't → price and medallion value rise even more.</li>
-      <li><b>Uber arrives</b> → a substitute → taxi demand falls → price and medallion value <b>crash</b>.</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🎛️ Try it: quota simulator</h3>
-    <div class="sim">
-      <svg class="graph" id="quotaGraph" viewBox="0 0 400 320" role="img" aria-label="Quota graph"></svg>
-      <div>
-        <label for="quota">Quota (max number of taxis): <span id="quotaVal">12,000</span></label>
-        <input type="range" id="quota" min="6000" max="30000" step="1000" value="12000">
-        <div class="readout" id="quotaOut"></div>
-      </div>
-    </div>
-  </div>
-
-  <h3>📺 Videos</h3>
-  <div class="grid">
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/gzhuXZeqAJc" title="Intro Econ: Quotas" allowfullscreen loading="lazy"></iframe><div class="vcap">Intro Econ: Quotas</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/D2tnwcpUFVY" title="Quantity Controls and Deadweight Loss" allowfullscreen loading="lazy"></iframe><div class="vcap">Quantity controls (quotas) &amp; deadweight loss</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/rFYFTM2o6sA" title="New York taxi medallions sell for $1m" allowfullscreen loading="lazy"></iframe><div class="vcap">Real world: NYC taxi medallions sell for $1M</div></div>
-  </div>
-</section>
-
-<!-- ================= L13 ================= -->
-<section id="l13">
-  <span class="tag">Lecture 13</span>
-  <h2>Price Ceilings &amp; Price Floors</h2>
-  <p class="lede">Legal maximum and minimum prices: rent control, milk prices and the minimum wage.</p>
-
-  <div class="grid">
-    <div class="card">
-      <h3 style="margin-top:0">⬇️ Price Ceiling (maximum price)</h3>
-      <ul>
-        <li>Binding only if set <b>below</b> equilibrium.</li>
-        <li>Result: <b>shortage</b> (Qd &gt; Qs).</li>
-        <li>Example: <b>rent control</b>. The goal is affordable housing.</li>
-        <li>Unintended effects: fewer apartments, lower quality and upkeep, waiting lists, people staying put, black markets, and benefits that go to whoever already holds a unit.</li>
-        <li>NYC data: the <b>wealthiest</b> renters saved 39% and the poorest saved 15% (2019 WSJ).</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3 style="margin-top:0">⬆️ Price Floor (minimum price)</h3>
-      <ul>
-        <li>Binding only if set <b>above</b> equilibrium.</li>
-        <li>Result: <b>surplus</b> (Qs &gt; Qd).</li>
-        <li>Examples: <b>milk</b> (PA $4.28, ME $4.06) and the <b>minimum wage</b> ($7.25 federal).</li>
-        <li>In the labor market a surplus of labor = <b>unemployment</b>.</li>
-        <li>But <b>Card &amp; Krueger (1994)</b> found that NJ's minimum wage increase did <b>not</b> reduce fast-food jobs compared with PA (Nobel 2021).</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="intuit">💡 <b>Memory trick:</b> A <b>ceiling</b> is above your head, but it only matters if it's <b>low</b> enough to hit you, so it binds below equilibrium. A <b>floor</b> is under your feet, but it only matters if it's <b>high</b> enough to push you up, so it binds above equilibrium. Ceilings cause shortages and floors cause surpluses.</div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🎛️ Try it: drag the legal price</h3>
-    <div class="sim">
-      <svg class="graph" id="pcGraph" viewBox="0 0 400 320" role="img" aria-label="Price control graph"></svg>
-      <div>
-        <label>Policy type</label>
-        <div class="seg" id="pcSeg">
-          <button data-v="ceiling" class="on">Price ceiling</button>
-          <button data-v="floor">Price floor</button>
-        </div>
-        <label for="pc">Legal price: $<span id="pcVal">20</span></label>
-        <input type="range" id="pc" min="5" max="55" value="20">
-        <div class="readout" id="pcOut"></div>
-        <p class="vcap">Equilibrium is $30 with 40 units. Try a ceiling above $30 or a floor below $30, and notice that nothing changes.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">🤔 Why might the minimum wage not cut jobs?</h3>
-    <ul>
-      <li><b>Monopsony:</b> when a few employers dominate a local labor market, they pay below the competitive wage. A minimum wage can then <i>raise</i> employment.</li>
-      <li><b>Lower turnover:</b> better-paid workers quit less, which saves hiring and training costs.</li>
-      <li><b>Higher productivity and morale</b> (efficiency wages).</li>
-      <li><b>Inelastic labor demand:</b> firms may pass costs on to prices instead of cutting staff.</li>
-    </ul>
-    <p><b>Real vs nominal:</b> $7.25 hasn't changed since 2009 in <i>nominal</i> dollars, but inflation means its <i>real</i> value keeps falling. If it had tracked productivity after 1968, it would be about $21.50. Today it sits below the 2-person poverty-level wage ($9.16).</p>
-  </div>
-
-  <h3>📺 Videos</h3>
-  <div class="grid">
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/a2iKaTqgrxs" title="Price Ceiling and Price Floor" allowfullscreen loading="lazy"></iframe><div class="vcap">Price Ceiling &amp; Price Floor (graphs + examples)</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/ZvN9NdIAOwY" title="Price Ceilings, Price Floors, and Deadweight Loss" allowfullscreen loading="lazy"></iframe><div class="vcap">Ceilings, floors &amp; deadweight loss</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/hMkvmZK3AJ4" title="Price Ceilings: Rent Controls" allowfullscreen loading="lazy"></iframe><div class="vcap">Rent control: shortages, quality, misallocation</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/xkL45zctzJM" title="The minimum wage: economic theory" allowfullscreen loading="lazy"></iframe><div class="vcap">The minimum wage: economic theory</div></div>
-    <div><iframe class="video" src="https://www.youtube-nocookie.com/embed/D1q8naOS1hw" title="Minimum Wage and Price Floors" allowfullscreen loading="lazy"></iframe><div class="vcap">Minimum wage as a price floor</div></div>
-  </div>
-</section>
-
-<!-- ================= QUIZ ================= -->
-<section id="quiz">
-  <span class="tag">Practice</span>
-  <h2>20 Practice Questions</h2>
-  <p class="lede">Click an answer to get instant feedback and an explanation. Filter by lecture or reset to try again.</p>
-  <div class="filters" id="filters">
-    <button class="btn primary" data-f="all">All</button>
-    <button class="btn" data-f="L11">L11</button>
-    <button class="btn" data-f="L12">L12</button>
-    <button class="btn" data-f="L13">L13</button>
-  </div>
-  <div id="questions"></div>
-  <div class="score">
-    <span id="scoreText">Score: 0 / 0 answered</span>
-    <button class="btn" id="resetBtn">Reset quiz</button>
-  </div>
-</section>
-
-<footer>Built from the Econ 100 lectures (Treado, Pitt): L11 Elasticity of Supply, L12 Government Policy, L13 Price Regulations. Videos are third-party YouTube content.</footer>
-</main>
+<main class="wrap" id="main"></main>
+<footer class="wrap">Built from Econ 100 lectures L17–L23 (Treado, Pitt). Graph numbers in the practice figures are made up for practice unless a lecture is cited. Videos are third-party YouTube content.</footer>
 
 <script>
-/* ---------- tiny SVG helpers ---------- */
+/* =========================================================
+   Chart helper: draws simple economics graphs from a spec
+   ========================================================= */
 const NS = "http://www.w3.org/2000/svg";
-function el(tag, attrs, text) {
+function E(tag, attrs, text) {
   const e = document.createElementNS(NS, tag);
   for (const k in attrs) e.setAttribute(k, attrs[k]);
   if (text != null) e.textContent = text;
   return e;
 }
-const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-// plot area: x 50..380, y 20..280 ; Q 0..80, P 0..60
-function mkScale(qMax, pMax) {
-  return { x: q => 50 + (q / qMax) * 330, y: p => 280 - (p / pMax) * 260 };
+const COL = { d: "--c-d", s: "--c-s", x: "--c-x", b: "--c-b", p: "--c-p", k: "--c-k", m: "--c-m" };
+const col = c => getComputedStyle(document.documentElement).getPropertyValue(COL[c] || c).trim();
+
+function chart(spec) {
+  const W = 440, H = 310, L = 52, R = 412, T = 18, B = 262;
+  const sx = x => L + (x / spec.xMax) * (R - L), sy = y => B - (y / spec.yMax) * (B - T);
+  const svg = E("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": spec.alt || "graph" });
+  const fmtx = spec.fx || (v => v), fmty = spec.fy || (v => v);
+  (spec.xt || []).forEach(v => svg.appendChild(E("text", { x: sx(v), y: B + 16, "text-anchor": "middle" }, fmtx(v))));
+  (spec.yt || []).forEach(v => svg.appendChild(E("text", { x: L - 6, y: sy(v) + 4, "text-anchor": "end" }, fmty(v))));
+  const txt = (x, y, s, c, anchor = "start", bold = true) => {
+    const t = E("text", { x, y, "text-anchor": anchor }, s);
+    t.style.fill = col(c); if (bold) t.style.fontWeight = "700"; svg.appendChild(t);
+  };
+  for (const it of spec.items) {
+    const c = col(it.c || "k");
+    if (it.t === "poly") {
+      svg.appendChild(E("polygon", { points: it.p.map(([x, y]) => `${sx(x)},${sy(y)}`).join(" "), fill: c, opacity: it.op ?? 0.22 }));
+      if (it.lab) txt(sx(it.lp[0]), sy(it.lp[1]), it.lab, it.c, "middle");
+    } else if (it.t === "line" || it.t === "path") {
+      const pts = it.p.map(([x, y]) => `${sx(x)},${sy(y)}`).join(" ");
+      svg.appendChild(E("polyline", { points: pts, fill: "none", stroke: c, "stroke-width": it.w || 2.5, "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-dasharray": it.dash ? "6 4" : "none" }));
+      if (it.lab) {
+        const [x, y] = it.lp || it.p[it.p.length - 1];
+        txt(sx(x) + (it.dx ?? 4), sy(y) + (it.dy ?? -6), it.lab, it.c, it.anchor || "start");
+      }
+    } else if (it.t === "h") {
+      svg.appendChild(E("line", { x1: L, y1: sy(it.y), x2: R, y2: sy(it.y), stroke: c, "stroke-width": 2, "stroke-dasharray": it.dash === false ? "none" : "6 4" }));
+      if (it.lab) txt(R, sy(it.y) - 6, it.lab, it.c, "end");
+    } else if (it.t === "v") {
+      svg.appendChild(E("line", { x1: sx(it.x), y1: T, x2: sx(it.x), y2: B, stroke: c, "stroke-width": 2, "stroke-dasharray": "6 4" }));
+      if (it.lab) txt(sx(it.x) + 4, T + 12, it.lab, it.c);
+    } else if (it.t === "guide") {
+      const [x, y] = it.p;
+      svg.appendChild(E("polyline", { points: `${L},${sy(y)} ${sx(x)},${sy(y)} ${sx(x)},${B}`, fill: "none", stroke: col("m"), "stroke-width": 1, "stroke-dasharray": "3 3" }));
+    } else if (it.t === "dot") {
+      svg.appendChild(E("circle", { cx: sx(it.p[0]), cy: sy(it.p[1]), r: 4.5, fill: c }));
+      if (it.lab) txt(sx(it.p[0]) + (it.dx ?? 7), sy(it.p[1]) + (it.dy ?? -7), it.lab, it.c, it.anchor || "start");
+    } else if (it.t === "bar") {
+      svg.appendChild(E("rect", { x: sx(it.x - it.w / 2), y: sy(it.y), width: sx(it.w) - sx(0), height: B - sy(it.y), fill: c, opacity: it.op ?? 0.75, rx: 2 }));
+      if (it.lab) txt(sx(it.x), sy(it.y) - 5, it.lab, it.c, "middle");
+    } else if (it.t === "txt") {
+      txt(sx(it.p[0]), sy(it.p[1]), it.s, it.c, it.anchor || "start", it.bold !== false);
+    }
+  }
+  svg.appendChild(E("line", { x1: L, y1: B, x2: R + 6, y2: B, stroke: col("m") }));
+  svg.appendChild(E("line", { x1: L, y1: T - 6, x2: L, y2: B, stroke: col("m") }));
+  svg.appendChild(E("text", { x: R + 6, y: H - 10, "text-anchor": "end" }, spec.xl));
+  svg.appendChild(E("text", { x: 6, y: 12 }, spec.yl));
+  return svg;
 }
-function axes(svg, s, qLabel, pLabel) {
-  svg.appendChild(el("line", { x1: 50, y1: 280, x2: 385, y2: 280, stroke: css("--muted") }));
-  svg.appendChild(el("line", { x1: 50, y1: 15, x2: 50, y2: 280, stroke: css("--muted") }));
-  svg.appendChild(el("text", { x: 380, y: 300, "text-anchor": "end" }, qLabel));
-  svg.appendChild(el("text", { x: 12, y: 18 }, pLabel));
-}
-function line(svg, x1, y1, x2, y2, color, extra = {}) {
-  svg.appendChild(el("line", Object.assign({ x1, y1, x2, y2, stroke: color, "stroke-width": 2.5, "stroke-linecap": "round" }, extra)));
-}
-function dot(svg, x, y, color) { svg.appendChild(el("circle", { cx: x, cy: y, r: 4.5, fill: color })); }
-function label(svg, x, y, t, color, anchor = "start") {
-  const e = el("text", { x, y, "text-anchor": anchor }, t);
-  e.style.fill = color; e.style.fontWeight = "600"; svg.appendChild(e);
+function figNode(key) {
+  const f = FIGS[key];
+  const wrap = document.createElement("div"); wrap.className = "fig";
+  if (f.html) wrap.innerHTML = f.html;
+  else wrap.appendChild(chart(f));
+  if (f.cap) { const c = document.createElement("div"); c.className = "figcap"; c.innerHTML = f.cap; wrap.appendChild(c); }
+  return wrap;
 }
 
-/* ---------- L11 elasticity sim ---------- */
-// Demand: P = 60 - 0.75Q  (Q = (60-P)/0.75). Supply passes through (40,30).
-let elasMode = "steep";
-function drawElas() {
-  const svg = document.getElementById("elasGraph"); svg.innerHTML = "";
-  const s = mkScale(80, 60);
-  axes(svg, s, "Quantity", "Price");
-  const shift = +document.getElementById("shift").value;
-  document.getElementById("shiftVal").textContent = shift;
-  const b = elasMode === "steep" ? 2.0 : 0.25; // supply slope: P = 30 + b(Q-40)
-  const dA = 60, dB = 0.75;
-  const Sp = q => 30 + b * (q - 40);
-  // supply line endpoints clipped to price 0..60
-  const qLo = Math.max(0, 40 - 30 / b), qHi = Math.min(80, 40 + 30 / b);
-  line(svg, s.x(qLo), s.y(Sp(qLo)), s.x(qHi), s.y(Sp(qHi)), css("--supply"));
-  label(svg, s.x(qHi) - 4, s.y(Sp(qHi)) - 6, "S", css("--supply"), "end");
-  // original demand
-  line(svg, s.x(0), s.y(dA), s.x(80), s.y(dA - dB * 80), css("--demand"), { opacity: shift ? 0.35 : 1 });
-  label(svg, s.x(4), s.y(dA) + 14, "D₁", css("--demand"));
-  // new demand: shifted left by `shift` units: P = 60 - 0.75(Q + shift)
-  const d2 = q => dA - dB * (q + shift);
-  if (shift) {
-    line(svg, s.x(0), s.y(d2(0)), s.x(80 - shift), s.y(d2(80 - shift)), css("--demand"), { "stroke-dasharray": "6 4" });
-    label(svg, s.x(80 - shift) - 6, s.y(d2(80 - shift)) - 8, "D₂", css("--demand"), "end");
-  }
-  // equilibria
-  dot(svg, s.x(40), s.y(30), css("--ink"));
-  // solve 60 - 0.75(Q+shift) = 30 + b(Q-40)
-  const q2 = (60 - 0.75 * shift - 30 + 40 * b) / (0.75 + b);
-  const p2 = Sp(q2);
-  if (shift) {
-    dot(svg, s.x(q2), s.y(p2), css("--policy"));
-    svg.appendChild(el("line", { x1: s.x(q2), y1: s.y(p2), x2: s.x(q2), y2: 280, stroke: css("--policy"), "stroke-dasharray": "3 3" }));
-    svg.appendChild(el("line", { x1: 50, y1: s.y(p2), x2: s.x(q2), y2: s.y(p2), stroke: css("--policy"), "stroke-dasharray": "3 3" }));
-  }
-  const dq = q2 - 40, dp = p2 - 30;
-  document.getElementById("elasOut").innerHTML =
-    `Price: $30 → <b>$${p2.toFixed(2)}</b> (${dp.toFixed(2)})<br>Quantity: 40 → <b>${q2.toFixed(1)}</b> (${dq.toFixed(1)})<br>` +
-    (shift ? (elasMode === "steep"
-      ? "With <b>inelastic</b> supply, the price absorbs most of the change and quantity barely moves."
-      : "With <b>elastic</b> supply, quantity absorbs most of the change and price barely moves.") : "Move the slider to shift demand.");
-}
-document.getElementById("shift").addEventListener("input", drawElas);
-document.querySelectorAll("#elasSeg button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("#elasSeg button").forEach(x => x.classList.remove("on"));
-  b.classList.add("on"); elasMode = b.dataset.v; drawElas();
-});
+/* =========================================================
+   Figures
+   ========================================================= */
+const GOODS_GRID = `
+<div class="goods">
+  <div></div><div class="hd">EXCLUDABLE<br>(can block non-payers)</div><div class="hd">NON-EXCLUDABLE<br>(can't block)</div>
+  <div class="hd">RIVAL<br>(use it up)</div>
+  <div class="cell"><b>Private good</b><span>pizza, clothes, a phone</span></div>
+  <div class="cell"><b>Common resource</b><span>ocean fish, a free but congested road</span></div>
+  <div class="hd">NON-RIVAL<br>(share it)</div>
+  <div class="cell"><b>Natural monopoly / club good</b><span>Netflix, cable TV, an uncongested toll road</span></div>
+  <div class="cell"><b>Public good</b><span>national defense, street lamps, a lighthouse</span></div>
+</div>`;
 
-/* ---------- L12 quota sim ---------- */
-// Taxi market (thousands). Demand: P = 35 - 1.0Q ; Supply: P = -5 + 1.0Q -> eq Q=20, P=15
-function drawQuota() {
-  const svg = document.getElementById("quotaGraph"); svg.innerHTML = "";
-  const s = mkScale(36, 36);
-  axes(svg, s, "Taxis (thousands)", "Price ($/ride)");
-  const quota = +document.getElementById("quota").value / 1000;
-  document.getElementById("quotaVal").textContent = (quota * 1000).toLocaleString();
-  const D = q => 35 - q, S = q => -5 + q;
-  line(svg, s.x(0), s.y(35), s.x(35), s.y(0), css("--demand")); label(svg, s.x(33), s.y(2) - 6, "D", css("--demand"), "end");
-  line(svg, s.x(5), s.y(0), s.x(36), s.y(31), css("--supply")); label(svg, s.x(36) - 4, s.y(31) - 6, "S", css("--supply"), "end");
-  line(svg, s.x(quota), s.y(0), s.x(quota), s.y(36), css("--policy"), { "stroke-dasharray": "6 4" });
-  label(svg, s.x(quota) + 4, s.y(34), "Quota", css("--policy"));
-  const out = document.getElementById("quotaOut");
-  if (quota >= 20) {
-    dot(svg, s.x(20), s.y(15), css("--ink"));
-    out.innerHTML = `<b>Not binding.</b> The market would only supply 20,000 taxis anyway.<br>Price stays <b>$15</b>; medallion value ≈ <b>$0</b>.`;
-  } else {
-    const pd = D(quota), ps = S(quota);
-    // quota rent rectangle
-    svg.appendChild(el("rect", { x: 50, y: s.y(pd), width: s.x(quota) - 50, height: s.y(ps) - s.y(pd), fill: css("--policy"), opacity: 0.18 }));
-    // deadweight loss triangle
-    svg.appendChild(el("polygon", { points: `${s.x(quota)},${s.y(pd)} ${s.x(20)},${s.y(15)} ${s.x(quota)},${s.y(ps)}`, fill: css("--bad"), opacity: 0.25 }));
-    dot(svg, s.x(quota), s.y(pd), css("--policy"));
-    out.innerHTML = `<b>Binding!</b> Only ${(quota * 1000).toLocaleString()} taxis allowed.<br>Riders pay <b>$${pd.toFixed(0)}</b>/ride (up from $15).<br>Drivers' cost of the last ride: $${Math.max(ps, 0).toFixed(0)}.<br>Quota rent per ride: <b>$${(pd - Math.max(ps, 0)).toFixed(0)}</b>. That's why medallions become valuable.<br><span style="color:var(--bad)">Red triangle</span> = deadweight loss (rides that would have helped both sides but don't happen).`;
-  }
-}
-document.getElementById("quota").addEventListener("input", drawQuota);
+const FIGS = {
+  goods: { html: GOODS_GRID, cap: "The two questions that sort every good: <b>Is it rival?</b> <b>Is it excludable?</b>" },
 
-/* ---------- L13 price control sim ---------- */
-// Demand: Qd = 100 - 2P ; Supply: Qs = 2P - 20 ; eq P=30, Q=40
-let pcMode = "ceiling";
-function drawPC() {
-  const svg = document.getElementById("pcGraph"); svg.innerHTML = "";
-  const s = mkScale(90, 60);
-  axes(svg, s, "Quantity", "Price");
-  const p = +document.getElementById("pc").value;
-  document.getElementById("pcVal").textContent = p;
-  line(svg, s.x(0), s.y(50), s.x(90), s.y(5), css("--demand")); label(svg, s.x(88), s.y(5) - 8, "D", css("--demand"), "end");
-  line(svg, s.x(0), s.y(10), s.x(90), s.y(55), css("--supply")); label(svg, s.x(88), s.y(55) + 16, "S", css("--supply"), "end");
-  dot(svg, s.x(40), s.y(30), css("--ink"));
-  line(svg, 50, s.y(p), 385, s.y(p), css("--policy"), { "stroke-dasharray": "6 4" });
-  label(svg, 384, s.y(p) - 6, pcMode === "ceiling" ? "Ceiling" : "Floor", css("--policy"), "end");
-  const qd = Math.max(0, 100 - 2 * p), qs = Math.max(0, 2 * p - 20);
-  const out = document.getElementById("pcOut");
-  const binding = pcMode === "ceiling" ? p < 30 : p > 30;
-  if (!binding) {
-    out.innerHTML = `<b>Not binding.</b> A ${pcMode} at $${p} is ${pcMode === "ceiling" ? "above" : "below"} equilibrium ($30), so the market stays at <b>$30, 40 units</b>.`;
-    return;
-  }
-  dot(svg, s.x(qd), s.y(p), css("--demand")); dot(svg, s.x(qs), s.y(p), css("--supply"));
-  const a = Math.min(qd, qs), b = Math.max(qd, qs);
-  svg.appendChild(el("rect", { x: s.x(a), y: s.y(p) - 6, width: s.x(b) - s.x(a), height: 12, fill: pcMode === "ceiling" ? css("--bad") : css("--supply"), opacity: 0.3, rx: 3 }));
-  const traded = Math.min(qd, qs);
-  if (pcMode === "ceiling") {
-    out.innerHTML = `<b>Binding ceiling → SHORTAGE.</b><br>Quantity demanded: <b>${qd}</b><br>Quantity supplied: <b>${qs}</b><br>Shortage: <b>${qd - qs} units</b><br>Only ${traded} units actually trade (fewer than 40!). Think rent control: more people want apartments, but fewer get built and rented out.`;
-  } else {
-    out.innerHTML = `<b>Binding floor → SURPLUS.</b><br>Quantity supplied: <b>${qs}</b><br>Quantity demanded: <b>${qd}</b><br>Surplus: <b>${qs - qd} units</b><br>Only ${traded} units actually sell. In the labor market, this surplus = unemployment (in the basic model).`;
-  }
-}
-document.getElementById("pc").addEventListener("input", drawPC);
-document.querySelectorAll("#pcSeg button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("#pcSeg button").forEach(x => x.classList.remove("on"));
-  b.classList.add("on"); pcMode = b.dataset.v;
-  document.getElementById("pc").value = pcMode === "ceiling" ? 20 : 40; drawPC();
-});
+  lamps: {
+    xMax: 6, yMax: 20, xl: "Number of lamps", yl: "$", alt: "Marginal social benefit of lamps vs cost",
+    xt: [1, 2, 3, 4, 5], yt: [3, 5, 9, 13, 17], fy: v => "$" + v,
+    items: [
+      { t: "bar", x: 1, y: 17, w: 0.6, c: "b", lab: "$17" },
+      { t: "bar", x: 2, y: 13, w: 0.6, c: "b", lab: "$13" },
+      { t: "bar", x: 3, y: 9, w: 0.6, c: "b", lab: "$9" },
+      { t: "bar", x: 4, y: 5, w: 0.6, c: "b", lab: "$5" },
+      { t: "bar", x: 5, y: 0.15, w: 0.6, c: "b", lab: "$0" },
+      { t: "h", y: 3, c: "x", lab: "Cost $3" }
+    ],
+    cap: "Green bars = MB to the whole apartment (Joe + Mike + Sam) of each extra lamp. Each lamp costs $3."
+  },
 
-/* ---------- Quiz ---------- */
-const Q = [
-  { l: "L11", q: "The price elasticity of supply measures…", o: ["How much quantity demanded responds to income", "How much quantity supplied responds to a change in price", "How much price responds to a change in supply", "How much supply shifts when input costs change"], a: 1, e: "PES = % change in quantity supplied ÷ % change in price. It measures how responsive producers are to price." },
-  { l: "L11", q: "Price rises 10% and quantity supplied rises 25%. Supply is…", o: ["Elastic (2.5)", "Inelastic (0.4)", "Unit elastic (1)", "Perfectly inelastic (0)"], a: 0, e: "25% ÷ 10% = 2.5 > 1, so supply is elastic. Producers respond more than proportionally." },
-  { l: "L11", q: "Which product most likely has the MOST inelastic supply in the short run?", o: ["T-shirts", "Smartphone apps", "Beachfront land", "Pizza"], a: 2, e: "The amount of beachfront land is essentially fixed. No matter the price, you can't make more, so supply is close to perfectly inelastic (vertical)." },
-  { l: "L11", q: "Supply generally becomes MORE elastic when…", o: ["Producers have less time to adjust", "Inputs become harder to find", "Firms can easily enter and exit the market", "Goods cannot be stored"], a: 2, e: "Easy entry/exit, more time, available inputs, spare capacity and the ability to store inventory all make supply more elastic." },
-  { l: "L11", q: "When egg prices spiked, retail egg orders rose 6× but total egg sales rose only 44%. Why was retail supply so much more elastic?", o: ["Hens laid more eggs at higher prices", "Sellers could shift eggs from wholesale buyers (a substitute in production) to retail", "Consumers stopped buying eggs", "The government subsidized retail eggs"], a: 1, e: "Retailers pulled eggs away from wholesale uses (bakeries, restaurants). Total supply is limited by the number of hens, which can't grow quickly, so total supply is far less elastic." },
-  { l: "L11", q: "Demand is relatively MORE elastic than supply. If demand decreases, the market mostly sees…", o: ["A large drop in quantity, small drop in price", "A large drop in price, smaller drop in quantity", "No change in price", "An increase in quantity"], a: 1, e: "A demand shift moves you along the SUPPLY curve. Since supply is relatively inelastic (steep), the price falls a lot and quantity falls less. In the lecture example, a $5 drop came with only −10 units." },
-  { l: "L11", q: "Demand is inelastic and supply is elastic. Demand decreases and price falls 10%. Quantity will…", o: ["Decrease by exactly 10%", "Decrease by more than 10%", "Decrease by less than 10%", "Increase"], a: 1, e: "Moving along an elastic supply curve (elasticity > 1), a 10% price drop produces a MORE than 10% drop in quantity supplied." },
-  { l: "L11", q: "The heroin market has inelastic demand and relatively elastic supply. Which policy most effectively reduces equilibrium QUANTITY?", o: ["Longer prison terms for sellers", "Increased border controls on imports", "Subsidizing rehab and anti-drug education (reducing demand)", "Higher fines for dealers"], a: 2, e: "Supply-side policies shift supply left along an INELASTIC demand curve, so the price rises a lot, quantity barely falls and dealer revenue (and crime) can go up. Shifting demand left moves along the ELASTIC supply curve, so quantity falls a lot." },
-  { l: "L12", q: "A quota (maximum quantity) is binding when it is set…", o: ["Above the equilibrium quantity", "Below the equilibrium quantity", "Equal to the equilibrium price", "Above the equilibrium price"], a: 1, e: "A cap only matters if it stops the market from reaching the quantity it would choose on its own, so it binds when set below equilibrium quantity." },
-  { l: "L12", q: "The NYC taxi market equilibrium is 20,000 taxis at $15/ride. Which quota is binding?", o: ["25,000 medallions", "20,000 medallions", "12,000 medallions", "30,000 medallions"], a: 2, e: "12,000 < 20,000 limits the market. A 25,000 cap is above equilibrium and changes nothing." },
-  { l: "L12", q: "A binding taxi quota causes the price of a ride to ___ and makes medallions ___.", o: ["Fall; worthless", "Rise; valuable", "Rise; worthless", "Stay the same; valuable"], a: 1, e: "Fewer taxis means riders compete for rides, so the price rises above drivers' cost. That gap (quota rent) is captured by whoever owns the right to operate, so medallions become valuable." },
-  { l: "L12", q: "With a binding medallion quota in place, ride-sharing apps like Uber enter the market. What happens to medallion values?", o: ["They rise because taxis are scarcer", "They fall because demand for taxi rides decreases", "No change, since the quota is fixed", "They rise because Uber increases total demand"], a: 1, e: "Uber is a substitute, so demand for taxi rides shifts left. The price and quota rent shrink, and medallion values collapse (which is what actually happened in NYC)." },
-  { l: "L12", q: "Requiring all drivers to carry car insurance is an example of…", o: ["A quota", "A price ceiling", "A minimum quantity regulation (mandate)", "A subsidy"], a: 2, e: "Mandates set a minimum quantity that must be bought. They bind when the required amount is above what the market would choose." },
-  { l: "L13", q: "A price ceiling is binding when it is set…", o: ["Above the equilibrium price", "Below the equilibrium price", "At the equilibrium price", "Above the equilibrium quantity"], a: 1, e: "A ceiling is a maximum. It only matters if it forces price below where the market would settle." },
-  { l: "L13", q: "A binding price ceiling creates a…", o: ["Surplus", "Shortage", "Higher equilibrium quantity", "Higher price"], a: 1, e: "At the lower legal price, quantity demanded rises and quantity supplied falls, so Qd > Qs, a shortage." },
-  { l: "L13", q: "Which is an UNINTENDED consequence of rent control?", o: ["Lower rents for people in controlled units", "Reduced supply and lower quality of rental housing", "More affordable housing for some tenants", "Rent stability for current tenants"], a: 1, e: "Landlords build fewer units, convert to condos and spend less on maintenance. The others listed are the intended goals." },
-  { l: "L13", q: "According to the 2019 WSJ study on NYC rent control, who saved the most?", o: ["Poorest renters (39%)", "Wealthiest renters (39%)", "Middle-income renters", "Everyone saved equally"], a: 1, e: "The wealthiest renters saved about 39% vs about 15% for the poorest. Rent-controlled units aren't targeted by income, so whoever gets and keeps one benefits." },
-  { l: "L13", q: "Pennsylvania sets a minimum milk price of $4.28 above the market equilibrium. This creates…", o: ["A shortage of milk", "A surplus of milk", "No effect", "Lower prices for consumers"], a: 1, e: "A binding price floor means Qs > Qd, a surplus. The goal is to support dairy farmers, but consumers pay more." },
-  { l: "L13", q: "In the basic supply-and-demand model, a binding minimum wage causes…", o: ["A shortage of workers", "Unemployment (a surplus of labor)", "Higher employment", "No change in employment"], a: 1, e: "The minimum wage is a price floor in the labor market. Above equilibrium, more people want to work (Qs↑) and firms hire fewer (Qd↓), which creates a labor surplus = unemployment." },
-  { l: "L13", q: "Card & Krueger compared fast-food jobs in NJ (which raised its minimum wage) and PA (which didn't). What did they find, and why might it happen?", o: ["Big job losses in NJ, as the basic model predicts", "No significant employment drop, possibly because employers have market power (monopsony)", "PA lost more jobs than NJ due to inflation", "NJ jobs doubled because wages rose"], a: 1, e: "They found no negative employment effect. Explanations include monopsony (employers pay below the competitive wage), lower turnover and higher productivity. Card won the 2021 Nobel Prize partly for this work." }
+  cap: {
+    xMax: 400, yMax: 70, xl: "Allowances (million tons CO₂)", yl: "$ per ton", alt: "Cap and trade allowance market",
+    xt: [200, 300], yt: [10, 29], fy: v => "$" + v,
+    items: [
+      { t: "line", p: [[0, 67], [352, 0]], c: "d", lab: "Demand for allowances", lp: [180, 32.8], dx: 8, dy: -4 },
+      { t: "v", x: 300, c: "s", lab: "Cap 2012" },
+      { t: "v", x: 200, c: "p", lab: "Lower cap" },
+      { t: "guide", p: [300, 10] }, { t: "guide", p: [200, 29] },
+      { t: "dot", p: [300, 10], c: "s" }, { t: "dot", p: [200, 29], c: "p" }
+    ],
+    cap: "Illustrative. The cap is a vertical supply curve: the government sets the quantity. California allowance prices rose from about $10 (2012) to $29 (2022)."
+  },
+
+  negx: {
+    xMax: 80, yMax: 110, xl: "Quantity of paper (tons)", yl: "Price ($)", alt: "Negative externality graph",
+    xt: [30, 40], yt: [20, 40, 60, 70, 80, 100], fy: v => "$" + v,
+    items: [
+      { t: "poly", p: [[30, 70], [40, 80], [40, 60]], c: "x", op: 0.28 },
+      { t: "line", p: [[0, 100], [80, 20]], c: "d", lab: "D = MPB = MSB", lp: [80, 20], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 20], [80, 100]], c: "s", lab: "S = MPC", lp: [62, 82], dx: 8, dy: 16 },
+      { t: "line", p: [[0, 40], [65, 105]], c: "x", lab: "MSC", lp: [65, 105], dx: -6, dy: 2, anchor: "end" },
+      { t: "guide", p: [40, 60] }, { t: "guide", p: [30, 70] }, { t: "guide", p: [40, 80] },
+      { t: "dot", p: [40, 60], c: "k", lab: "A" }, { t: "dot", p: [30, 70], c: "x", lab: "C", dx: -16 }
+    ],
+    cap: "A paper factory pollutes a river. MSC = MPC + MEC. Red triangle = deadweight loss from overproduction."
+  },
+
+  posx: {
+    xMax: 80, yMax: 130, xl: "College students (thousands)", yl: "Price ($K)", alt: "Positive externality graph",
+    xt: [45, 55], yt: [10, 45, 55, 65, 75, 100, 120], fy: v => "$" + v + "K",
+    items: [
+      { t: "poly", p: [[45, 55], [45, 75], [55, 65]], c: "x", op: 0.28 },
+      { t: "line", p: [[0, 100], [80, 20]], c: "d", lab: "D = MPB", lp: [80, 20], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 120], [80, 40]], c: "b", lab: "MSB", lp: [80, 40], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 10], [80, 90]], c: "s", lab: "S = MC", lp: [80, 90], dx: -4, dy: -8, anchor: "end" },
+      { t: "guide", p: [45, 55] }, { t: "guide", p: [55, 65] }, { t: "guide", p: [45, 75] }, { t: "guide", p: [45, 45] },
+      { t: "dot", p: [45, 55], c: "k", lab: "A", dx: -16 }, { t: "dot", p: [55, 65], c: "b", lab: "C" }
+    ],
+    cap: "Education has external benefits (MEB). MSB = MPB + MEB. Red triangle = deadweight loss from underproduction."
+  },
+
+  ppf: {
+    xMax: 40, yMax: 66, xl: "Drinks per hour", yl: "Burgers per hour", alt: "Joint PPF of Joe and Liz",
+    xt: [18, 30, 36], yt: [30, 60],
+    items: [
+      { t: "path", p: [[0, 60], [30, 30], [36, 0]], c: "p", w: 3 },
+      { t: "guide", p: [30, 30] },
+      { t: "dot", p: [0, 60], c: "p", lab: "Both make burgers", dx: 8, dy: 4 },
+      { t: "dot", p: [30, 30], c: "p", lab: "Both specialize", dx: 8, dy: -4 },
+      { t: "dot", p: [36, 0], c: "p", lab: "Both make drinks", dx: -8, dy: -10, anchor: "end" },
+      { t: "guide", p: [18, 30] }, { t: "dot", p: [18, 30], c: "m", lab: "No trade", dx: -10, dy: -10 }
+    ],
+    cap: "Joint PPF for one hour. Joe: 30 burgers <i>or</i> 6 drinks. Liz: 30 burgers <i>or</i> 30 drinks. The gray dot is one hour with no specialization (each splits time 50/50: 30 burgers, 18 drinks)."
+  },
+
+  exports: {
+    xMax: 400, yMax: 200, xl: "Airplanes", yl: "Price ($M)", alt: "Export market graph",
+    xt: [100, 200, 300], yt: [100, 150], fy: v => "$" + v + "M",
+    items: [
+      { t: "poly", p: [[0, 100], [0, 150], [100, 150], [200, 100]], c: "d", op: 0.18 },
+      { t: "poly", p: [[100, 150], [300, 150], [200, 100]], c: "b", op: 0.35 },
+      { t: "line", p: [[0, 200], [400, 0]], c: "d", lab: "Domestic D", lp: [380, 10], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 0], [390, 195]], c: "s", lab: "Domestic S", lp: [390, 195], dx: -6, dy: 4, anchor: "end" },
+      { t: "h", y: 150, c: "p", lab: "World price $150M", dash: true },
+      { t: "guide", p: [200, 100] }, { t: "guide", p: [100, 150] }, { t: "guide", p: [300, 150] },
+      { t: "dot", p: [200, 100], c: "k" }, { t: "dot", p: [100, 150], c: "d" }, { t: "dot", p: [300, 150], c: "s" }
+    ],
+    cap: "Before trade: $100M and 200 planes. Blue area = consumer surplus that moves to producers. Green triangle = net gain from exporting."
+  },
+
+  tariff: {
+    xMax: 140, yMax: 15, xl: "T-shirts (millions)", yl: "Price ($)", alt: "Tariff on imports graph",
+    xt: [30, 40, 60, 80, 90], yt: [5, 6, 8], fy: v => "$" + v,
+    items: [
+      { t: "poly", p: [[30, 5], [40, 6], [40, 5]], c: "x", op: 0.35 },
+      { t: "poly", p: [[80, 5], [80, 6], [90, 5]], c: "x", op: 0.35 },
+      { t: "poly", p: [[40, 5], [40, 6], [80, 6], [80, 5]], c: "p", op: 0.25 },
+      { t: "line", p: [[0, 14], [140, 0]], c: "d", lab: "D", lp: [130, 1], dx: -2, dy: -6, anchor: "end" },
+      { t: "line", p: [[0, 2], [120, 14]], c: "s", lab: "S (domestic)", lp: [120, 14], dx: -4, dy: -6, anchor: "end" },
+      { t: "h", y: 5, c: "m", lab: "World price $5" },
+      { t: "h", y: 6, c: "p", lab: "World price + $1 tariff" },
+      { t: "guide", p: [60, 8] }, { t: "guide", p: [30, 5] }, { t: "guide", p: [90, 5] }, { t: "guide", p: [40, 6] }, { t: "guide", p: [80, 6] },
+      { t: "dot", p: [60, 8], c: "k", lab: "No trade", dx: 8, dy: -2 }
+    ],
+    cap: "Purple rectangle = tariff revenue. Red triangles = deadweight loss (left: production inefficiency, right: consumption inefficiency)."
+  },
+
+  trucks: {
+    xMax: 210, yMax: 60, xl: "Dorm rooms moved", yl: "ATC ($ per room)", alt: "Short-run and long-run ATC for three trucks",
+    xt: [10, 30, 50, 100, 200], yt: [12, 19, 25, 35, 55], fy: v => "$" + v,
+    items: [
+      { t: "path", p: [[10, 25], [30, 20], [50, 25], [100, 30], [200, 35]], c: "s", lab: "Small truck", lp: [200, 35], dx: -4, dy: -8, anchor: "end" },
+      { t: "path", p: [[10, 55], [30, 19], [50, 13], [100, 15], [200, 20]], c: "d", lab: "Medium", lp: [200, 20], dx: -4, dy: -8, anchor: "end" },
+      { t: "path", p: [[30, 36.67], [50, 23], [100, 12], [200, 14]], c: "x", lab: "Large", lp: [30, 36.67], dx: 8, dy: 4 },
+      { t: "path", p: [[10, 25], [30, 19], [50, 13], [100, 12], [200, 14]], c: "p", w: 5, dash: true, lab: "Long-run ATC", lp: [100, 12], dx: 0, dy: 20 }
+    ],
+    cap: "Each solid curve is a short-run ATC (truck size fixed). The dashed purple line is the long-run ATC: the cheapest truck for each output level. (The large truck's ATC at 10 rooms is $105, off the top of the chart.)"
+  }
+};
+
+/* =========================================================
+   Lecture content
+   ========================================================= */
+const V = (id, cap) => ({ id, cap });
+const LECTURES = [
+{
+  id: "L17", title: "Market & Good Categories",
+  lede: "How economies decide who gets what, and the two questions that sort every good into one of four boxes.",
+  learn: `
+  <div class="card">
+    <h3>Three ways to allocate scarce resources</h3>
+    <div class="tblwrap"><table>
+      <tr><th>System</th><th>Who decides?</th><th>Focus</th></tr>
+      <tr><td><b>Pure planned</b></td><td>A central authority, by executive decision</td><td>Equity (fairness)</td></tr>
+      <tr><td><b>Mixed</b> (US, most countries)</td><td>Markets <i>and</i> government together</td><td>Balance efficiency and equity</td></tr>
+      <tr><td><b>Pure market</b></td><td>Supply and demand, through the price mechanism</td><td>Efficiency</td></tr>
+    </table></div>
+  </div>
+  <div class="card">
+    <h3>The 2×2 of goods</h3>
+    <div id="fig-goods"></div>
+    <div class="intuit">💡 <b>Two plain-English tests.</b> <b>Rival:</b> "If I use it, is there less for you?" (Eat my pizza and it's gone, so it's rival. Watch the fireworks and they're still there for everyone, so they're non-rival.) <b>Excludable:</b> "Can you stop me from using it if I don't pay?" (Netflix can lock you out. The army can't stop protecting you.)</div>
+    <ul>
+      <li><b>Public goods</b> are non-rival <i>and</i> non-excludable. That combination is what makes them hard for markets to sell, since people can enjoy them free.</li>
+      <li>"Public good" is an economics label, not "anything the government provides." Public schools are government-provided, but education is rival and excludable.</li>
+      <li>A good can move between boxes. A free highway at 3 a.m. is non-rival. At rush hour every car slows the others, so it becomes rival, which makes it a common resource.</li>
+    </ul>
+  </div>`,
+  videos: [V("XK-545_1JcA", "Types of goods: private, public, common, club"), V("pJU028t-7mg", "Rival and excludable goods")],
+  qs: [
+    { k: "concept", q: "In a pure market economy, resources are allocated mainly by…", o: ["Prices set by supply and demand", "A central planning authority", "Voting on each good", "Equal shares for every citizen"], e: "Markets allocate through the price mechanism and focus on efficiency. A planned economy uses executive decisions and focuses on equity." },
+    { k: "concept", q: "A mixed economy like the US tries to…", o: ["Balance efficiency (markets) with equity (government)", "Maximize efficiency and ignore equity", "Maximize equity and ignore efficiency", "Avoid any government role in markets"], e: "Mixed economies combine market forces with a central authority, trying to get the efficiency of markets while using government to address fairness and market failures." },
+    { k: "concept", q: "A good is NON-RIVAL when…", o: ["One person's use does not reduce the amount available to others", "Nobody can be prevented from using it", "It is provided by the government", "It has no price"], e: "Rivalry is about using it up. Non-rival means sharing doesn't diminish it: a radio broadcast, a street lamp's light, a Netflix show." },
+    { k: "concept", q: "A good is NON-EXCLUDABLE when…", o: ["People who don't pay cannot be prevented from using it", "Using it leaves less for others", "It is very cheap", "Only one firm sells it"], e: "Excludability is about blocking non-payers. You can't stop a ship from seeing a lighthouse's light, so it's non-excludable." },
+    { k: "graph", fig: "goods", q: "Using the grid, where does a Netflix subscription belong?", o: ["Non-rival and excludable: club good / natural monopoly", "Rival and excludable: private good", "Non-rival and non-excludable: public good", "Rival and non-excludable: common resource"], e: "Your watching a show doesn't use it up (non-rival), but Netflix can lock out people who don't pay (excludable)." },
+    { k: "graph", fig: "goods", q: "Using the grid, where do fish in the open ocean belong?", o: ["Rival and non-excludable: common resource", "Non-rival and non-excludable: public good", "Rival and excludable: private good", "Non-rival and excludable: club good"], e: "A fish you catch can't be caught by someone else (rival), and nobody can stop boats from fishing the open ocean (non-excludable)." },
+    { k: "concept", q: "National defense is the classic public good because…", o: ["Protecting one more person doesn't reduce others' protection, and nobody in the country can be left out", "The government pays for it", "It is very expensive", "Everyone agrees it is important"], e: "It's non-rival AND non-excludable. Who pays for it isn't what makes it a public good. The two characteristics are." },
+    { k: "concept", q: "Public schools are run by the government. Is education a public good?", o: ["No. Education is rival and excludable; government provides it for other reasons, such as externalities", "Yes, because the government provides it", "Yes, because it is non-rival", "No, because it is a common resource"], e: "Seats in a classroom are limited (rival) and schools can refuse entry (excludable). Governments provide education mainly because of its positive externalities, not because it's a public good." },
+    { k: "concept", q: "A free highway is empty at 3 a.m. but jammed at 5 p.m. At rush hour it acts like…", o: ["A common resource: rival and non-excludable", "A public good at all hours", "A private good", "A club good"], e: "Congestion makes it rival, since each extra car slows everyone else. It's still non-excludable without tolls, so at rush hour it behaves like a common resource." },
+    { k: "concept", q: "Why would a private firm struggle to sell a pure public good like a fireworks show over a city?", o: ["People can watch without paying, so few would pay (free riders)", "Fireworks are too expensive to make", "Nobody wants fireworks", "The government bans it"], e: "Non-excludability means people get the benefit whether or not they pay, so they have an incentive to free ride. Revenue won't cover the cost even if the show is worth it to everyone." }
+  ]
+},
+{
+  id: "L18", title: "Public Goods & Common Resources",
+  lede: "Why markets under-provide public goods (free riders) and over-use common resources (tragedy of the commons), and the policies that fix them.",
+  learn: `
+  <div class="card">
+    <h3>Why does the public sector provide things?</h3>
+    <div class="grid2">
+      <div><b>Public goods → Free rider problem</b><br>National defense, local security, the legal system, street lamps, lighthouses.</div>
+      <div><b>Non-public goods → Externalities</b><br>Education, healthcare, health and flood insurance, bridges, roads and ports, public housing, national parks.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>The free rider problem: lamps in an apartment</h3>
+    <div class="tblwrap"><table>
+      <tr><th class="num"># Lamps</th><th class="num">MB Joe</th><th class="num">MB Mike</th><th class="num">MB Sam</th><th class="num">MB to apartment</th></tr>
+      <tr><td class="num">1</td><td class="num">4</td><td class="num">8</td><td class="num">5</td><td class="num"><b>17</b></td></tr>
+      <tr><td class="num">2</td><td class="num">3</td><td class="num">6</td><td class="num">4</td><td class="num"><b>13</b></td></tr>
+      <tr><td class="num">3</td><td class="num">2</td><td class="num">4</td><td class="num">3</td><td class="num"><b>9</b></td></tr>
+      <tr><td class="num">4</td><td class="num">1</td><td class="num">2</td><td class="num">2</td><td class="num"><b>5</b></td></tr>
+      <tr><td class="num">5</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num"><b>0</b></td></tr>
+    </table></div>
+    <div id="fig-lamps"></div>
+    <div class="intuit">💡 A lamp lights the whole room, so it's non-rival in the apartment. That means its value to the room is everyone's MB <b>added together</b>. The efficient number is <b>4 lamps</b>, because the 4th is still worth $5 to the room but costs only $3. But nobody values the 4th lamp at $3 or more on their own, and each roommate hopes someone else will buy it. That's free riding.</div>
+  </div>
+  <div class="card">
+    <h3>Common resources and the tragedy of the commons</h3>
+    <p>Common resources are <b>rival but non-excludable</b>. Each user ignores the cost their use imposes on everyone else, which is a negative externality. When the rate of use keeps shrinking the stock, use is <b>unsustainable</b>. Bluefin tuna are the lecture's example.</p>
+    <ul>
+      <li><b>Production quotas</b> (a total catch limit) lead to a "race to fish." Catch limits were exceeded <b>44% of the time</b>.</li>
+      <li><b>Catch shares (ITQs)</b> give each fisher a tradable share of the catch. Limits were exceeded only <b>5 times</b>, and revenues rose <b>27% after 5 years and 68% after 10</b>.</li>
+      <li><b>Cap and trade in California:</b> the cap on carbon allowances falls each year, so supply shifts left. Allowance prices went from $10 (2012) to $29 (2022). Emissions fell 14% by 2023, and the 2020 target was reached in 2016.</li>
+    </ul>
+    <div id="fig-cap"></div>
+  </div>
+  <div class="card">
+    <h3>Policy ladder: from least to most intervention</h3>
+    <ol>
+      <li><b>Private bargaining</b>. Requires clear property rights, which don't exist for the open ocean.</li>
+      <li><b>Marketable permits</b>: ITQs (catch shares), cap and trade, patents.</li>
+      <li><b>Corrective taxes and subsidies</b>: cigarette taxes, school vouchers, subsidized housing.</li>
+      <li><b>Quotas and mandates</b>: indoor smoking bans, drinking age limits, school attendance, vaccine requirements.</li>
+      <li><b>Government provision</b>: public schools.</li>
+    </ol>
+  </div>`,
+  videos: [V("MPIHSfKu6rM", "Free riders, tragedy of the commons & policy"), V("xfMEAZOywp0", "The free rider problem explained")],
+  qs: [
+    { k: "concept", q: "The free rider problem means…", o: ["People can enjoy a good without paying, so too little gets paid for and the market under-provides it", "Goods are given away for free by the government", "People use too much of a public good", "Firms charge too much for public goods"], e: "Because public goods are non-excludable, each person hopes others will pay. Total willingness to pay looks too low, so the market provides less than the efficient amount." },
+    { k: "graph", fig: "lamps", q: "From the graph, what is the marginal benefit to the whole apartment of the 2nd lamp?", o: ["$13", "$6", "$30", "$17"], e: "Add each roommate's MB for lamp #2: Joe $3 + Mike $6 + Sam $4 = $13. You add them because everyone enjoys the same lamp (non-rival). ($30 is the total benefit of 2 lamps, $17 + $13.)" },
+    { k: "graph", fig: "lamps", q: "Each lamp costs $3. What is the efficient number of lamps?", o: ["4", "3", "5", "2"], e: "Keep buying while the room's MB ≥ cost. Lamp 4 is worth $5 > $3, so buy it. Lamp 5 is worth $0 < $3, so stop. Efficient = 4." },
+    { k: "concept", q: "If each roommate decides alone (and hopes the others buy lamps), what is the likely outcome?", o: ["Fewer than 4 lamps, because no one person values the 4th lamp at $3 or more", "Exactly 4 lamps", "More than 4 lamps", "Zero lamps no matter what"], e: "Mike values lamps 1–3 at ≥ $3 ($8, $6, $4), so he might buy 3. Nobody individually values lamp 4 at $3 (Joe $1, Mike $2, Sam $2), even though the room values it at $5. So the efficient 4th lamp doesn't get bought." },
+    { k: "concept", q: "Why does the tragedy of the commons happen?", o: ["Each user gets the full benefit of using more but shares the cost of depletion with everyone", "Common resources are excludable", "Government sets prices too high", "People don't value common resources"], e: "Rival + non-excludable means my extra catch reduces your stock (a negative externality), but I don't pay for it. Everyone overuses until the stock collapses." },
+    { k: "concept", q: "Why did catch shares (ITQs) outperform simple production quotas for fisheries?", o: ["Owning a tradable share of the catch ends the race to fish and gives fishers a stake in a healthy stock", "They eliminated fishing entirely", "They let anyone fish without limits", "They lowered the price of fish"], e: "With a total-limit quota, each boat races to catch fish before the limit is hit (limits exceeded 44% of the time). With a guaranteed share there's no race, and a healthier stock raises the value of your share. Limits were exceeded only 5 times, and revenues rose 68% after 10 years." },
+    { k: "graph", fig: "cap", q: "In the graph, the government lowers the cap from 300 to 200 million tons. What happens?", o: ["Supply of allowances shifts left and the allowance price rises from $10 to $29", "Demand shifts right and price rises", "Price falls because fewer allowances are traded", "Nothing, since the cap doesn't affect price"], e: "The cap is a vertical supply curve. Lowering it is a leftward supply shift along the same demand curve, so the price rises. That's what happened in California's market." },
+    { k: "concept", q: "Why is cap and trade considered an efficient way to cut emissions?", o: ["Firms that can cut pollution cheaply do so and sell their allowances, so the total cut happens at the lowest cost", "Every firm must cut emissions by exactly the same amount", "It bans pollution completely", "The government chooses which firms pollute"], e: "Trading lets the allowances flow to the firms that value them most. Those with cheap ways to cut emissions cut more. The cap fixes the total, and the market finds the cheapest way to meet it." },
+    { k: "concept", q: "Why doesn't private bargaining solve overfishing in the open ocean?", o: ["Nobody has clear property rights to the ocean", "Fishers are unwilling to talk", "Fish are a public good", "Bargaining is illegal"], e: "Private bargaining (the first rung of the ladder) needs clear property rights. Nobody owns the open ocean, so there's no one to bargain with." },
+    { k: "concept", q: "Which list goes from LEAST to MOST government intervention?", o: ["Private bargaining → marketable permits → corrective taxes → quotas/mandates → government provision", "Government provision → quotas → taxes → permits → bargaining", "Taxes → bargaining → permits → provision → quotas", "Permits → provision → bargaining → quotas → taxes"], e: "The lecture's ladder runs from the market fixing itself (bargaining), to market tools (permits, taxes), to rules (quotas, mandates), to the government doing it directly." }
+  ]
+},
+{
+  id: "L19", title: "Negative Externalities",
+  lede: "When producing or consuming something imposes costs on bystanders, the market makes too much of it.",
+  learn: `
+  <div class="card">
+    <h3>Four kinds of externality</h3>
+    <div class="tblwrap"><table>
+      <tr><th></th><th>Production</th><th>Consumption</th></tr>
+      <tr><td><b>Negative</b></td><td>↑ social cost (pollution)</td><td>↓ social benefit (secondhand smoke)</td></tr>
+      <tr><td><b>Positive</b></td><td>↓ social cost (tech innovation)</td><td>↑ social benefit (flu shot)</td></tr>
+    </table></div>
+  </div>
+  <div class="card">
+    <h3>The key equation: MSC = MPC + MEC</h3>
+    <ul>
+      <li><b>MPC</b> (marginal private cost) is what the firm pays. Adding up firms' MC gives market supply.</li>
+      <li><b>MEC</b> (marginal external cost) is the cost dumped on others, like a polluted river or climate damage.</li>
+      <li><b>MSC</b> = the full cost to society. Efficiency is where <b>MSB = MSC</b> (point C), not where the private market lands (point A).</li>
+    </ul>
+    <div id="fig-negx"></div>
+    <div class="intuit">💡 <b>Think of it as a hidden bill.</b> The factory only sees its own costs, so it acts as if paper is cheaper to make than it really is. Underpriced things get over-produced. Every ton from 30 to 40 costs society more (MSC) than it's worth to buyers (MSB). That gap is the deadweight loss.</div>
+    <p><b>Climate data from the lecture:</b> the 4th National Climate Assessment estimated costs of up to 14% of US GDP by 2090 with no mitigation, versus under 4% with mitigation. The 5th (2023) found the US now averages a $1B+ weather disaster about every three weeks.</p>
+  </div>
+  <div class="card">
+    <h3>🎛️ Try it: a corrective (Pigouvian) tax</h3>
+    <div class="sim">
+      <div class="fig" id="sim-negx"></div>
+      <div>
+        <label for="taxR">Tax per ton: $<span id="taxV">0</span></label>
+        <input type="range" id="taxR" min="0" max="40" step="1" value="0">
+        <div class="readout" id="taxOut"></div>
+        <p class="figcap">The tax shifts the supply curve up by the tax amount. Find the tax that makes the deadweight loss zero.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Tax vs quota</h3>
+    <p>Both can move the market to the efficient quantity of 30. With a <b>tax</b>, the gap between buyer and seller prices goes to the government as revenue. With a <b>quota</b>, there's no tax payment, so that same area stays with producers as extra surplus.</p>
+  </div>`,
+  videos: [V("EstPko3SHt0", "Externalities & deadweight loss graphs"), V("IBJWmDzVNM0", "The logic of corrective taxes (practice problem)")],
+  qs: [
+    { k: "concept", q: "A neighbor smokes on their balcony and the smoke drifts into your apartment. This is a…", o: ["Negative consumption externality", "Negative production externality", "Positive consumption externality", "Public good"], e: "The harm comes from consuming cigarettes, and it lowers the social benefit of that consumption below the private benefit." },
+    { k: "concept", q: "Why does an unregulated market over-produce a good that pollutes?", o: ["Firms base decisions on their private cost (MPC) and ignore the external cost (MEC)", "Consumers demand too much of everything", "Government subsidizes polluters", "Pollution lowers production costs for society"], e: "Supply reflects only MPC. Since MPC < MSC, the market acts as if the good is cheaper to make than it really is, so quantity ends up too high." },
+    { k: "graph", fig: "negx", q: "In the paper market graph, how much paper does the unregulated market produce?", o: ["40 tons", "30 tons", "60 tons", "80 tons"], e: "The private market sets D = MPC (S), point A at 40 tons and $60, ignoring the external cost." },
+    { k: "graph", fig: "negx", q: "What is the efficient quantity of paper?", o: ["30 tons", "40 tons", "20 tons", "0 tons; any pollution is inefficient"], e: "Efficiency is where MSB (= demand) meets MSC, point C at 30 tons and $70." },
+    { k: "graph", fig: "negx", q: "What is the marginal external cost (MEC) per ton?", o: ["$20", "$10", "$60", "$70"], e: "MEC is the vertical gap between MSC and MPC. At 40 tons, MSC = $80 and MPC = $60, so $20 per ton. The two curves are parallel, so it's $20 everywhere." },
+    { k: "graph", fig: "negx", q: "What is the deadweight loss from the unregulated market?", o: ["$100", "$200", "$20", "$400"], e: "The red triangle runs from Q = 30 to 40 (base 10). Its height at Q = 40 is MSC $80 − MSB $60 = $20. Area = ½ × 10 × 20 = $100." },
+    { k: "graph", fig: "negx", q: "Which corrective tax moves this market to the efficient outcome?", o: ["$20 per ton, equal to the MEC", "$10 per ton", "$60 per ton", "$70 per ton"], e: "A tax equal to MEC shifts supply up by $20 so it lies on top of MSC. The new equilibrium is 30 tons. Buyers pay $70 and sellers keep $50." },
+    { k: "graph", fig: "negx", q: "With the efficient $20 tax in place, how much tax revenue does the government collect?", o: ["$600", "$800", "$200", "$100"], e: "Revenue = tax × quantity = $20 × 30 tons = $600." },
+    { k: "concept", q: "A quota of 30 tons also reaches the efficient quantity. What is the main difference from the $20 tax?", o: ["With a quota there's no tax revenue, and that area becomes extra surplus for producers", "The quota produces less paper than the tax", "The quota creates deadweight loss but the tax doesn't", "The quota lowers the price buyers pay"], e: "Both give Q = 30 and buyers pay $70. With the tax, the $20 gap per ton goes to the government. With a quota, producers keep it." },
+    { k: "concept", q: "Why isn't the efficient amount of pollution zero?", o: ["The goods that create pollution are valuable; we cut pollution until the last unit's benefit equals its full social cost", "Pollution has no cost", "Zero pollution is illegal", "Firms would refuse to produce anything"], e: "At Q = 30, the last ton of paper is worth exactly its full social cost ($70). Cutting below that would give up paper worth more to people than the damage it causes. Efficiency means MSB = MSC, not zero harm." }
+  ]
+},
+{
+  id: "L20", title: "Positive Externalities",
+  lede: "When a good benefits people beyond the buyer, the market makes too little of it.",
+  learn: `
+  <div class="card">
+    <h3>The key equation: MSB = MPB + MEB</h3>
+    <ul>
+      <li><b>MPB</b> is the buyer's own benefit. Adding up individual MB gives market demand.</li>
+      <li><b>MEB</b> (marginal external benefit) is the benefit that spills over to others.</li>
+      <li>The market settles where MPB = MC (point A), but efficiency needs <b>MSB = MSC</b> (point C). The result is <b>under</b>production.</li>
+    </ul>
+    <div class="intuit">💡 <b>Think of it as an unpaid favor.</b> When you get vaccinated you protect yourself, and you also protect your neighbors, the baby too young for the shot, and your grandma. You don't get paid for those favors, so people buy less than society would want.</div>
+  </div>
+  <div class="card">
+    <h3>Measles: herd immunity as an external benefit</h3>
+    <ul>
+      <li>Before the 1963 vaccine, 3–4 million people in the US were infected each year, with 400–500 US deaths a year.</li>
+      <li>Measles was eliminated from the US by 2000.</li>
+      <li>With more than 95% coverage, a community is protected by <b>herd immunity</b>. Kindergarten coverage has fallen since 2009–10.</li>
+      <li>By March 21, 2025, the Texas outbreak had produced more cases than all of 2024. There were 1,618 US cases in 2025 at the time of the lecture.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Education: a positive consumption externality</h3>
+    <div id="fig-posx"></div>
+    <p><b>Policies that raise quantity:</b> a <b>mandate</b> (school attendance, vaccine requirements), a <b>corrective subsidy</b> (to buyers <i>or</i> sellers, either one works), or <b>government provision</b> (public schools).</p>
+    <div class="intuit">💡 The subsidy that fixes the problem equals the <b>MEB</b>. It pays people for the favor they're doing for everyone else. Here that's $20K per student. Students pay $45K out of pocket, colleges receive $65K, and enrollment rises to the efficient 55K.</div>
+  </div>`,
+  videos: [V("3Ym9FmyP_Ek", "Positive externalities & subsidies"), V("bbboV96bvM8", "Positive externality in consumption")],
+  qs: [
+    { k: "concept", q: "Getting a flu shot is an example of a…", o: ["Positive consumption externality", "Negative consumption externality", "Positive production externality", "Common resource"], e: "Your shot also lowers the chance that others get sick, which raises the social benefit of consuming it above your private benefit." },
+    { k: "concept", q: "A firm's research creates new technology that other firms can copy. This is a…", o: ["Positive production externality (lowers social cost)", "Negative production externality", "Positive consumption externality", "Free rider problem only"], e: "Innovation spills over and lowers production costs for others, so social cost falls below private cost." },
+    { k: "concept", q: "Why does the market under-produce goods with positive externalities?", o: ["Buyers only count their own benefit (MPB), not the benefit to others (MEB)", "Sellers' costs are too low", "Prices are too high because of taxes", "Demand includes the external benefit"], e: "Demand reflects only MPB. Since MSB > MPB, buyers stop purchasing before society's benefit falls to the cost of production." },
+    { k: "graph", fig: "posx", q: "In the education graph, how many students attend college in the unregulated market?", o: ["45 thousand", "55 thousand", "65 thousand", "75 thousand"], e: "The market sets MPB (demand) = MC (supply), point A at 45K students and $55K." },
+    { k: "graph", fig: "posx", q: "What is the efficient number of students?", o: ["55 thousand", "45 thousand", "50 thousand", "80 thousand"], e: "Efficiency is where MSB = MC, point C at 55K students and $65K." },
+    { k: "graph", fig: "posx", q: "What is the marginal external benefit (MEB) per student?", o: ["$20K", "$10K", "$55K", "$65K"], e: "MEB is the vertical gap between MSB and MPB. At 45K students, MSB = $75K and MPB = $55K, so $20K." },
+    { k: "graph", fig: "posx", q: "What is the deadweight loss in the unregulated market?", o: ["$100 million, from underproduction", "$100 million, from overproduction", "$200 million, from underproduction", "$20 million, from underproduction"], e: "The triangle runs from 45K to 55K students (base 10K). Its height at 45K is MSB $75K − MC $55K = $20K. Area = ½ × 10,000 × $20,000 = $100M. It's underproduction because the market stops short of the efficient quantity." },
+    { k: "graph", fig: "posx", q: "With a $20K-per-student subsidy paid to students, how much does a student pay out of pocket at the new equilibrium?", o: ["$45K", "$65K", "$55K", "$20K"], e: "The subsidy moves enrollment to 55K, where colleges receive $65K. Students pay $65K − $20K subsidy = $45K." },
+    { k: "concept", q: "Kindergarten measles vaccination falls from above 95% to below it. Why might cases jump sharply?", o: ["Herd immunity, an external benefit, breaks down, so the virus can spread through the community", "The vaccine stops working", "More people get vaccinated", "Measles becomes less infectious"], e: "Above 95% coverage, even unvaccinated people are protected because the disease can't spread. That protection is the MEB. Below the threshold it disappears, which is what happened in the 2025 Texas outbreak." },
+    { k: "concept", q: "Does it matter whether the corrective subsidy is given to buyers or to sellers?", o: ["No. Either way, quantity rises to the efficient level", "Yes. Only a subsidy to buyers works", "Yes. Only a subsidy to sellers works", "Yes. A subsidy to sellers lowers quantity"], e: "A buyer subsidy shifts demand up and a seller subsidy shifts supply down. With the right amount, both land at the efficient quantity C, as the lecture shows." }
+  ]
+},
+{
+  id: "L21", title: "Comparative Advantage & Exports",
+  lede: "Why trade makes everyone better off even when one side is better at everything, and what exporting does to a country.",
+  learn: `
+  <div class="card">
+    <h3>Trade in the world</h3>
+    <ul>
+      <li>The US and China make up almost 25% of total world trade ($24T).</li>
+      <li>78% of trade is merchandise and 22% is services. 63% of merchandise trade is manufactured goods.</li>
+      <li>Exports and imports are both sources of economic growth, and trade is associated with lower poverty.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Absolute vs comparative advantage</h3>
+    <div class="tblwrap"><table>
+      <tr><th>Per hour</th><th class="num">Joe (cook)</th><th class="num">Liz (waiter)</th></tr>
+      <tr><td>Burgers</td><td class="num">30</td><td class="num">30</td></tr>
+      <tr><td>Drinks</td><td class="num">6</td><td class="num">30</td></tr>
+      <tr><td>Opportunity cost of 1 burger</td><td class="num"><b>1/5 drink</b></td><td class="num">1 drink</td></tr>
+      <tr><td>Opportunity cost of 1 drink</td><td class="num">5 burgers</td><td class="num"><b>1 burger</b></td></tr>
+    </table></div>
+    <ul>
+      <li><b>Absolute advantage</b> means more output from the same input (productivity). Liz has it in drinks, and they tie in burgers.</li>
+      <li><b>Comparative advantage</b> means the lowest <i>opportunity cost</i>. Joe has it in burgers and Liz has it in drinks.</li>
+      <li>In an 8-hour day without specialization (4 hours on each task): 240 burgers and 144 drinks. With specialization: 240 burgers and <b>240 drinks</b>, which is <b>96 more drinks</b> for free.</li>
+    </ul>
+    <div class="intuit">💡 <b>Ask "what do you give up?", not "who's better?"</b> Every hour Joe spends on drinks costs 150 burgers to make 30 drinks. Every hour Liz spends on burgers costs 30 drinks. Joe is "bad" at drinks, but that's exactly what makes him the cheap burger-maker. Everyone has a comparative advantage in <i>something</i>.</div>
+    <div id="fig-ppf"></div>
+  </div>
+  <div class="card">
+    <h3>Exports: when the world price is above the domestic price</h3>
+    <div id="fig-exports"></div>
+    <p>If airplanes cost $100M at home but sell for $150M on the world market, domestic producers sell at $150M. At home, quantity supplied rises to 300 and quantity demanded falls to 100. The difference, <b>200 planes, is exported</b>.</p>
+    <p><b>Producers gain</b> (PS +$12.5B) and <b>domestic consumers lose</b> (CS −$7.5B) because they now pay the world price. The country gains overall: <b>+$5B</b>.</p>
+  </div>`,
+  videos: [V("sFvX5dt8ufs", "Comparative advantage & gains from trade"), V("jwYh_gcJrlQ", "Comparative vs absolute advantage & the PPF")],
+  qs: [
+    { k: "concept", q: "Absolute advantage means…", o: ["Producing more output with the same resources (higher productivity)", "Producing at the lowest opportunity cost", "Working harder than others", "Exporting more than you import"], e: "Absolute advantage is about productivity, meaning output per unit of input. It isn't about effort or hard work." },
+    { k: "concept", q: "Who has the absolute advantage in making drinks?", o: ["Liz (30 per hour vs 6)", "Joe", "Neither; they tie", "Both"], e: "Liz makes 30 drinks per hour and Joe makes 6, so Liz is more productive at drinks." },
+    { k: "concept", q: "What is Joe's opportunity cost of making one drink?", o: ["5 burgers", "1/5 burger", "1 burger", "6 burgers"], e: "In one hour Joe can make 30 burgers or 6 drinks. Each drink costs 30 ÷ 6 = 5 burgers given up." },
+    { k: "concept", q: "Joe and Liz make burgers equally fast. Who has the comparative advantage in burgers?", o: ["Joe, since a burger costs him 1/5 drink vs 1 drink for Liz", "Liz, since she is faster at everything", "Neither, since they tie in burger productivity", "Both equally"], e: "Comparative advantage depends on opportunity cost, not speed. Joe gives up only 1/5 of a drink per burger and Liz gives up a whole drink, so Joe is the cheaper burger-maker." },
+    { k: "concept", q: "In an 8-hour day, they switch from splitting time 50/50 to fully specializing. What happens to total output?", o: ["Burgers stay at 240; drinks rise from 144 to 240 (+96)", "Burgers rise and drinks fall", "Both fall", "Nothing changes; specialization only redistributes"], e: "Without trade: Joe makes 120 burgers + 24 drinks and Liz 120 + 120, for 240 burgers and 144 drinks. With specialization: Joe makes 240 burgers and Liz 240 drinks. They get 96 extra drinks from the same 16 hours." },
+    { k: "graph", fig: "ppf", q: "On the joint PPF, what does the kink at (30 drinks, 30 burgers) represent?", o: ["Full specialization: Liz makes only drinks and Joe makes only burgers", "Both split their time 50/50", "Both make only burgers", "An unattainable point"], e: "Liz's hour gives 30 drinks and Joe's hour gives 30 burgers. Each does only what they're comparatively best at." },
+    { k: "graph", fig: "ppf", q: "Moving from 60 burgers toward more drinks, the first 30 drinks cost 1 burger each and the last 6 cost 5 burgers each. Why does the slope change?", o: ["The first drinks come from Liz (low opportunity cost); the last must come from Joe (high opportunity cost)", "Drinks get more expensive to buy", "Workers get tired", "The PPF is always a straight line"], e: "An efficient economy assigns tasks to the lowest-cost producer first. Liz switches first (1 burger per drink). Only after she's fully on drinks does Joe switch (5 burgers per drink), so the PPF gets steeper." },
+    { k: "graph", fig: "ppf", q: "The gray point (18 drinks, 30 burgers) is inside the PPF. What does that tell you?", o: ["Splitting time without specializing wastes potential output", "It is the best possible point", "It is impossible to produce", "It shows the gains from trade"], e: "At the same 30 burgers, specializing gives 30 drinks instead of 18. Being inside the frontier means they could have more of one good without giving up any of the other." },
+    { k: "graph", fig: "exports", q: "The domestic price of airplanes is $100M and the world price is $150M. How many planes does the country export?", o: ["200", "100", "300", "0; it imports instead"], e: "At $150M, domestic producers supply 300 and domestic buyers want only 100. The extra 300 − 100 = 200 planes are exported." },
+    { k: "graph", fig: "exports", q: "Who wins and who loses when the country starts exporting airplanes?", o: ["Producers gain $12.5B, domestic buyers lose $7.5B, and the country gains $5B overall", "Everyone gains", "Consumers gain and producers lose", "Producers gain but the country loses overall"], e: "Domestic buyers now pay the higher world price (CS loss = $50M × (200 + 100)/2 = $7.5B). Producers sell more at a higher price (PS gain = $50M × (200 + 300)/2 = $12.5B). Net = ½ × 200 × $50M = +$5B." }
+  ]
+},
+{
+  id: "L22", title: "Imports & Trade Policy",
+  lede: "Imports help consumers, and tariffs reverse part of that at a cost to the whole economy.",
+  learn: `
+  <div class="card">
+    <h3>Imports: when the world price is below the domestic price</h3>
+    <p>Consumers buy more at the lower world price, and domestic producers sell less. The difference is imported. <b>Consumers gain more than producers lose</b>, so total surplus rises.</p>
+    <div class="intuit">💡 Exports and imports mirror each other. Whoever is on the "cheap side" of the world price gains: consumers gain from imports, and producers gain from exports. In both cases the country as a whole comes out ahead.</div>
+  </div>
+  <div class="card">
+    <h3>Tariffs: a tax on imports</h3>
+    <div class="tblwrap"><table>
+      <tr><th>US tariff on Bangladesh apparel</th><th class="num">2024</th><th class="num">2025</th></tr>
+      <tr><td>Tariff rate</td><td class="num">15%</td><td class="num">53%</td></tr>
+      <tr><td>Target's tariff payment on a $10 t-shirt</td><td class="num">$1.50</td><td class="num">$5.30</td></tr>
+    </table></div>
+    <ul>
+      <li><b>Statutory burden:</b> the domestic importer (Target) writes the check.</li>
+      <li><b>Economic burden:</b> importers <i>and</i> consumers, because prices rise on imported <b>and domestic</b> goods.</li>
+      <li><b>Washing machines (2018):</b> tariffs of 9–84% raised prices by 108–225% of the tariff, on washers and on dryers too.</li>
+      <li><b>Steel (2018):</b> a 25% tariff raised prices 37%. Ford reported a $1B profit hit.</li>
+      <li><b>Cost per job saved</b> by past tariffs ranged from $46K to $2M, averaging <b>$536K</b>.</li>
+      <li><b>Smoot-Hawley (1930):</b> average tariffs around 60%. From 1929–33 world trade fell 66% and US exports fell 46%. It took 50+ years to negotiate those rates down.</li>
+      <li><b>2025:</b> the largest US trade-policy change since 1930. The Supreme Court ruled the tariffs illegal in 2026. About $122B of an estimated $165B was refunded, mostly to importing companies rather than consumers.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>🎛️ Try it: tariff on t-shirts</h3>
+    <div class="sim">
+      <div class="fig" id="sim-tariff"></div>
+      <div>
+        <label for="tarR">Tariff per shirt: $<span id="tarV">1.00</span></label>
+        <input type="range" id="tarR" min="0" max="3" step="0.25" value="1">
+        <div class="readout" id="tarOut"></div>
+      </div>
+    </div>
+    <h3>Reference graph ($1 tariff)</h3>
+    <div id="fig-tariff"></div>
+  </div>`,
+  videos: [V("vd__kWXHI8s", "Import tariffs and economic welfare"), V("x8hhWANmFZo", "The effect of an import tariff")],
+  qs: [
+    { k: "concept", q: "A tariff is…", o: ["A tax on imported goods, paid by the domestic importer", "A tax on exports, paid by foreign countries", "A limit on the quantity of imports", "A subsidy to domestic producers"], e: "A tariff taxes imports. The importing company (e.g., Target) pays it to the government, so foreign countries don't write the check." },
+    { k: "concept", q: "Target pays a tariff on imported t-shirts. Who bears the ECONOMIC burden?", o: ["Target and its customers, through higher prices", "Only Bangladesh's government", "Only Target", "Nobody; it's paid by foreign producers"], e: "The statutory burden falls on the importer, but stores pass part of the cost to consumers through higher prices. The person who writes the check isn't the only one who pays." },
+    { k: "concept", q: "After a tariff on imported washing machines, why did prices of DOMESTIC washers (and dryers) also rise?", o: ["With imports more expensive, domestic sellers face less competition and can raise prices too", "Domestic producers also pay the tariff", "Demand for washers fell", "The government set a price floor"], e: "The tariff raises the price that imports compete at. Domestic producers can match it, and complements like dryers rose too. That's why prices rose 108–225% of the tariff rate." },
+    { k: "graph", fig: "tariff", q: "Under free trade at the world price of $5, how many t-shirts are imported?", o: ["60 million", "30 million", "90 million", "40 million"], e: "At $5, domestic demand is 90M and domestic supply is 30M. Imports = 90 − 30 = 60M." },
+    { k: "graph", fig: "tariff", q: "With a $1 tariff, how many t-shirts are imported?", o: ["40 million", "60 million", "80 million", "20 million"], e: "The domestic price rises to $6. Demand falls to 80M and domestic supply rises to 40M, so imports = 80 − 40 = 40M." },
+    { k: "graph", fig: "tariff", q: "How much tariff revenue does the government collect with the $1 tariff?", o: ["$40 million", "$60 million", "$80 million", "$10 million"], e: "Revenue = tariff × imports = $1 × 40M = $40M, the purple rectangle." },
+    { k: "graph", fig: "tariff", q: "What is the total deadweight loss from the $1 tariff?", o: ["$10 million", "$5 million", "$40 million", "$85 million"], e: "There are two triangles. Production inefficiency: ½ × (40 − 30) × $1 = $5M. Consumption inefficiency: ½ × (90 − 80) × $1 = $5M. Total = $10M." },
+    { k: "graph", fig: "tariff", q: "Compare the changes from the $1 tariff: consumers lose $85M, producers gain $35M, and the government collects $40M. What does this show?", o: ["Consumers lose more than producers and government gain combined; the $10M gap is deadweight loss", "Everyone gains", "The tariff creates $10M of new surplus", "Producers lose the most"], e: "$85M lost vs $35M + $40M = $75M gained. The missing $10M is the deadweight loss. That's why tariffs that save jobs cost so much per job (an average of $536K)." },
+    { k: "concept", q: "The country opens to trade and t-shirt prices fall from $8 (no trade) to the $5 world price. What happens?", o: ["Consumers gain, domestic producers lose, and total surplus rises", "Everyone loses", "Producers gain and consumers lose", "Total surplus falls because jobs are lost"], e: "Consumers buy more at a lower price (CS +$225M). Domestic producers sell less at a lower price (PS −$135M). Net gain = +$90M." },
+    { k: "concept", q: "What is the main lesson of the Smoot-Hawley Tariff of 1930?", o: ["High tariffs invite retaliation and can shrink trade; world trade fell 66% from 1929–33", "Tariffs ended the Great Depression", "Tariffs have no effect on trade", "Tariffs only affect foreign countries"], e: "Other countries retaliated, world trade collapsed 66%, and US exports fell 46%. It took the US 50+ years to negotiate tariffs back down." }
+  ]
+},
+{
+  id: "L23", title: "Production Costs",
+  lede: "Fixed vs variable costs, marginal vs average cost, and why the average cost curve is U-shaped.",
+  learn: `
+  <div class="card">
+    <h3>Short run vs long run</h3>
+    <ul>
+      <li><b>Short run:</b> at least one factor is fixed (you've already rented the truck).</li>
+      <li><b>Long run:</b> all factors are variable (you can pick any truck size).</li>
+      <li><b>TC = TFC + TVC.</b> Fixed costs don't change with output. Variable costs do.</li>
+      <li><b>MC = ΔTC ÷ ΔOutput.</b> Divide by the change in <i>output</i>, not the change in workers.</li>
+      <li><b>ATC = TC ÷ Q = AFC + AVC.</b></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Lecture table: fixed cost $150 (table $100 + base $50), workers $20 each</h3>
+    <div class="tblwrap"><table>
+      <tr><th class="num">Workers</th><th class="num">TC</th><th class="num">Output</th><th class="num">Extra output</th><th class="num">MC</th><th class="num">ATC</th></tr>
+      <tr><td class="num">0</td><td class="num">$150</td><td class="num">0</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td class="num">1</td><td class="num">$170</td><td class="num">10</td><td class="num">10</td><td class="num">$20/10 = $2.00</td><td class="num">$17.00</td></tr>
+      <tr><td class="num">2</td><td class="num">$190</td><td class="num">18</td><td class="num">8</td><td class="num">$20/8 = $2.50</td><td class="num">$10.56</td></tr>
+      <tr><td class="num">3</td><td class="num">$210</td><td class="num">23</td><td class="num">5</td><td class="num">$20/5 = $4.00</td><td class="num">$9.13</td></tr>
+    </table></div>
+    <div class="intuit">💡 <b>Why the ATC curve is U-shaped.</b> At first, fixed costs get spread over more units ($6,000 rent is $6,000 a unit at 1 unit, $3,000 at 2, $2,000 at 3), so ATC falls. Later, <b>diminishing marginal product</b> kicks in: crowding, coordination problems and overtime mean each extra worker adds less output, so MC and AVC rise and eventually pull ATC up.</div>
+  </div>
+  <div class="card">
+    <h3>Moving company: which truck?</h3>
+    <div class="tblwrap"><table>
+      <tr><th class="num">Rooms</th><th class="num">Small ($200) TC</th><th class="num">ATC</th><th class="num">Medium ($500) TC</th><th class="num">ATC</th><th class="num">Large ($1000) TC</th><th class="num">ATC</th></tr>
+      <tr><td class="num">10</td><td class="num">250</td><td class="num"><b>25</b></td><td class="num">550</td><td class="num">55</td><td class="num">1050</td><td class="num">105</td></tr>
+      <tr><td class="num">30</td><td class="num">600</td><td class="num">20</td><td class="num">570</td><td class="num"><b>19</b></td><td class="num">1100</td><td class="num">36.67</td></tr>
+      <tr><td class="num">50</td><td class="num">1250</td><td class="num">25</td><td class="num">650</td><td class="num"><b>13</b></td><td class="num">1150</td><td class="num">23</td></tr>
+      <tr><td class="num">100</td><td class="num">3000</td><td class="num">30</td><td class="num">1500</td><td class="num">15</td><td class="num">1200</td><td class="num"><b>12</b></td></tr>
+      <tr><td class="num">200</td><td class="num">7000</td><td class="num">35</td><td class="num">4000</td><td class="num">20</td><td class="num">2800</td><td class="num"><b>14</b></td></tr>
+    </table></div>
+    <div id="fig-trucks"></div>
+    <ul>
+      <li><b>Economies of scale:</b> long-run ATC <i>falls</i> as output rises (10 → 100 rooms: $25 → $12).</li>
+      <li><b>Diseconomies of scale:</b> long-run ATC <i>rises</i> as output rises (100 → 200 rooms: $12 → $14).</li>
+    </ul>
+  </div>`,
+  videos: [V("2QMb-bxFc_I", "Short-run vs long-run cost curves"), V("68-vmWJQqlo", "Long-run ATC and economies of scale")],
+  qs: [
+    { k: "concept", q: "What separates the short run from the long run?", o: ["In the short run at least one input is fixed; in the long run all inputs are variable", "The short run is less than one year", "In the long run all costs are fixed", "In the short run there are no fixed costs"], e: "It's about flexibility, not the calendar. Once you've rented the truck you're in the short run. When you can pick any truck size, you're in the long run." },
+    { k: "concept", q: "For the moving company, which cost is FIXED once the semester starts?", o: ["The truck rental", "Gasoline", "Movers' wages", "Packing supplies used per room"], e: "The truck rental is paid regardless of how many rooms you move. Gas and movers scale with output, so they're variable." },
+    { k: "concept", q: "In the worker table, what is the marginal cost per unit when the 2nd worker is hired?", o: ["$2.50", "$20.00", "$10.56", "$2.00"], e: "MC = ΔTC ÷ ΔOutput = $20 ÷ (18 − 10) = $20 ÷ 8 = $2.50. A common mistake is dividing by the change in workers, which gives $20." },
+    { k: "concept", q: "In the worker table, MC rises from $2.00 to $2.50 to $4.00. Why?", o: ["Diminishing marginal product: each extra worker adds less output (10, then 8, then 5)", "Wages rise with each worker", "Fixed costs rise", "The firm becomes more efficient"], e: "Each worker costs the same $20, but crowding means the 2nd adds 8 units and the 3rd only 5. The same $20 spread over fewer extra units means a higher MC." },
+    { k: "concept", q: "What is ATC with 3 workers?", o: ["$9.13", "$4.00", "$70.00", "$6.52"], e: "ATC = TC ÷ Q = $210 ÷ 23 ≈ $9.13. Include the fixed cost: TC is $150 + 3 × $20 = $210." },
+    { k: "concept", q: "With the small truck ($200), moving 100 rooms costs $3,000 in total. What is the AVC?", o: ["$28 per room", "$30 per room", "$2 per room", "$3,000"], e: "VC = TC − FC = $3,000 − $200 = $2,800. AVC = $2,800 ÷ 100 = $28. (ATC is $30 and AFC is $2.)" },
+    { k: "concept", q: "Why does the ATC curve slope DOWN at low output?", o: ["Fixed costs are spread over more units, so AFC falls", "Variable costs per unit rise", "Workers become less productive", "Fixed costs decrease as output rises"], e: "Fixed costs don't change, but dividing them by a bigger quantity shrinks the per-unit share ($6,000 → $3,000 → $2,000)." },
+    { k: "concept", q: "Why does the ATC curve eventually slope UP?", o: ["Rising variable costs per unit (crowding, coordination problems, overtime) outweigh falling AFC", "Fixed costs increase", "The firm runs out of fixed costs to spread", "Demand falls"], e: "Diminishing marginal product and rising input costs push AVC up. Eventually that outweighs the shrinking AFC, which makes the U-shape." },
+    { k: "graph", fig: "trucks", q: "You expect to move 30 rooms. Which truck gives the lowest average cost?", o: ["Medium ($19 per room)", "Small ($20 per room)", "Large ($36.67 per room)", "They're all equal"], e: "At 30 rooms the ATCs are small $20, medium $19 and large $36.67. The long-run ATC picks the lowest, so choose the medium truck." },
+    { k: "graph", fig: "trucks", q: "Long-run ATC falls from $25 (10 rooms) to $12 (100 rooms), then rises to $14 (200 rooms). This shows…", o: ["Economies of scale, then diseconomies of scale", "Diseconomies of scale, then economies of scale", "Constant returns to scale", "Diminishing marginal product only"], e: "Falling long-run ATC as output grows is economies of scale. Rising long-run ATC is diseconomies of scale. This is about choosing the scale (truck size), not adding workers to a fixed truck." }
+  ]
+}
 ];
 
-let answered = {}, filter = "all";
-function renderQuiz() {
-  const box = document.getElementById("questions"); box.innerHTML = "";
-  Q.forEach((item, i) => {
-    if (filter !== "all" && item.l !== filter) return;
+/* =========================================================
+   Interactive sims
+   ========================================================= */
+function drawTaxSim() {
+  const t = +document.getElementById("taxR").value;
+  document.getElementById("taxV").textContent = t;
+  const Q = (80 - t) / 2, Pb = 100 - Q, Ps = Pb - t, dwl = (Q - 30) ** 2;
+  const items = [
+    { t: "line", p: [[0, 100], [80, 20]], c: "d", lab: "D = MSB", lp: [80, 20], dx: -4, dy: -8, anchor: "end" },
+    { t: "line", p: [[0, 20], [80, 100]], c: "s", lab: "MPC", lp: [62, 82], dx: 8, dy: 16 },
+    { t: "line", p: [[0, 40], [65, 105]], c: "x", lab: "MSC", lp: [65, 105], dx: -6, dy: 2, anchor: "end" }
+  ];
+  if (t > 0) items.push({ t: "line", p: [[0, 20 + t], [Math.min(80, 90 - t), 20 + t + Math.min(80, 90 - t)]], c: "p", dash: true, lab: "MPC + tax", lp: [10, 30 + t], dx: 0, dy: -8 });
+  if (Math.abs(Q - 30) > 0.01) {
+    items.unshift({ t: "poly", p: [[Q, 100 - Q], [Q, 40 + Q], [30, 70]], c: "x", op: 0.28 });
+  }
+  items.push({ t: "guide", p: [Q, Pb] }, { t: "dot", p: [Q, Pb], c: "p" }, { t: "dot", p: [30, 70], c: "x", lab: "C", dx: -16 });
+  const box = document.getElementById("sim-negx"); box.innerHTML = "";
+  box.appendChild(chart({ xMax: 80, yMax: 110, xl: "Paper (tons)", yl: "Price ($)", xt: [30, 40], yt: [20, 40, 60, 70, 80, 100], fy: v => "$" + v, items }));
+  let msg;
+  if (t === 20) msg = "✅ <b>Efficient!</b> A tax equal to the MEC ($20) makes firms pay the full social cost. Deadweight loss is gone.";
+  else if (t < 20) msg = "Still <b>over</b>producing: the tax is smaller than the $20 external cost.";
+  else msg = "Now <b>under</b>producing: the tax is bigger than the external cost, which creates a new deadweight loss.";
+  document.getElementById("taxOut").innerHTML =
+    `Quantity: <b>${Q.toFixed(1)}</b> tons (efficient = 30)<br>Buyers pay: <b>$${Pb.toFixed(1)}</b> · Sellers keep: <b>$${Ps.toFixed(1)}</b><br>Tax revenue: <b>$${(t * Q).toFixed(0)}</b><br>Deadweight loss: <b>$${dwl.toFixed(0)}</b><br>${msg}`;
+}
+
+function drawTariffSim() {
+  const t = +document.getElementById("tarR").value;
+  document.getElementById("tarV").textContent = t.toFixed(2);
+  const P = 5 + t, Qd = 140 - 10 * P, Qs = 10 * P - 20, imp = Math.max(0, Qd - Qs);
+  const rev = t * imp, dwl = 10 * t * t, csLoss = t * (90 + Qd) / 2, psGain = t * (30 + Qs) / 2;
+  const items = [];
+  if (t > 0) {
+    items.push({ t: "poly", p: [[30, 5], [Qs, P], [Qs, 5]], c: "x", op: 0.35 });
+    items.push({ t: "poly", p: [[Qd, 5], [Qd, P], [90, 5]], c: "x", op: 0.35 });
+    if (imp > 0) items.push({ t: "poly", p: [[Qs, 5], [Qs, P], [Qd, P], [Qd, 5]], c: "p", op: 0.25 });
+  }
+  items.push(
+    { t: "line", p: [[0, 14], [140, 0]], c: "d", lab: "D", lp: [130, 1], dx: -2, dy: -6, anchor: "end" },
+    { t: "line", p: [[0, 2], [120, 14]], c: "s", lab: "S", lp: [120, 14], dx: -4, dy: -6, anchor: "end" },
+    { t: "h", y: 5, c: "m", lab: "World $5" }
+  );
+  if (t > 0) items.push({ t: "h", y: P, c: "p", lab: `$5 + $${t.toFixed(2)} tariff` }, { t: "guide", p: [Qs, P] }, { t: "guide", p: [Qd, P] });
+  const box = document.getElementById("sim-tariff"); box.innerHTML = "";
+  box.appendChild(chart({ xMax: 140, yMax: 15, xl: "T-shirts (millions)", yl: "Price ($)", xt: [30, 60, 90], yt: [5, 8], fy: v => "$" + v, items }));
+  document.getElementById("tarOut").innerHTML =
+    `Domestic price: <b>$${P.toFixed(2)}</b><br>Domestic supply: <b>${Qs.toFixed(1)}M</b> · Demand: <b>${Qd.toFixed(1)}M</b><br>Imports: <b>${imp.toFixed(1)}M</b><br>Consumer surplus lost: <b>$${csLoss.toFixed(1)}M</b><br>Producer surplus gained: <b>$${psGain.toFixed(1)}M</b><br>Tariff revenue: <b>$${rev.toFixed(1)}M</b><br>Deadweight loss: <b>$${dwl.toFixed(1)}M</b>` +
+    (t >= 3 ? "<br>At $8 imports hit zero: the tariff is <b>prohibitive</b> and the country is back to no trade." : "");
+}
+
+/* =========================================================
+   Quiz engine (options shuffled deterministically)
+   ========================================================= */
+function seeded(str) { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507), h = Math.imul(h ^ (h >>> 13), 3266489909), (h ^= h >>> 16) >>> 0) / 4294967296); }
+function shuffle(arr, rnd) { for (let j = arr.length - 1; j > 0; j--) { const r = Math.floor(rnd() * (j + 1)); [arr[j], arr[r]] = [arr[r], arr[j]]; } return arr; }
+LECTURES.forEach(L => {
+  // spread correct answers evenly across A–D within each lecture
+  const lr = seeded(L.id), slots = shuffle([0, 1, 2, 3, 0, 1, 2, 3, ...shuffle([0, 1, 2, 3], lr).slice(0, 2)], lr);
+  L.qs.forEach((q, i) => {
+    const wrong = shuffle(q.o.slice(1), seeded(L.id + i));
+    q.ans = slots[i]; q.opts = wrong.slice(); q.opts.splice(q.ans, 0, q.o[0]);
+  });
+});
+
+const ANS = {};
+LECTURES.forEach(L => ANS[L.id] = {});
+
+function lectureScore(L) {
+  const a = ANS[L.id], keys = Object.keys(a);
+  return { right: keys.filter(k => a[k] === L.qs[k].ans).length, done: keys.length };
+}
+function updateScores() {
+  let r = 0, d = 0;
+  LECTURES.forEach(L => {
+    const s = lectureScore(L); r += s.right; d += s.done;
+    const m = document.querySelector(`#tabs button[data-id="${L.id}"] .mini`);
+    if (m) m.textContent = s.done ? `${s.right}/10` : "";
+  });
+  document.getElementById("overall").innerHTML = `Overall: <b>${r}</b> correct of ${d} answered · 70 total`;
+  const cur = LECTURES.find(L => L.id === current), el = document.getElementById("lecScore");
+  if (cur && el) { const s = lectureScore(cur); el.innerHTML = `${cur.id} score: <b>${s.right}</b> / ${s.done} answered (of 10)`; }
+}
+
+function renderQuiz(L) {
+  const box = document.getElementById("qbox"); box.innerHTML = "";
+  L.qs.forEach((q, i) => {
     const d = document.createElement("div"); d.className = "q";
-    d.innerHTML = `<div class="qh"><span class="qn">Q${i + 1} · ${item.l}</span>${item.q}</div>`;
-    item.o.forEach((opt, j) => {
-      const b = document.createElement("button"); b.className = "opt"; b.textContent = String.fromCharCode(65 + j) + ". " + opt;
-      if (answered[i] != null) {
+    d.innerHTML = `<div class="qh"><span class="qn">Q${i + 1}</span>${q.q}<span class="kind">${q.k === "graph" ? "📈 graph" : "concept"}</span></div>`;
+    if (q.fig) d.appendChild(figNode(q.fig));
+    const picked = ANS[L.id][i];
+    q.opts.forEach((opt, j) => {
+      const b = document.createElement("button"); b.className = "opt";
+      b.textContent = String.fromCharCode(65 + j) + ". " + opt;
+      if (picked != null) {
         b.disabled = true;
-        if (j === item.a) b.classList.add("right");
-        else if (j === answered[i]) b.classList.add("wrong");
+        if (j === q.ans) b.classList.add("right"); else if (j === picked) b.classList.add("wrong");
       }
-      b.onclick = () => { answered[i] = j; renderQuiz(); };
+      b.onclick = () => { ANS[L.id][i] = j; renderQuiz(L); updateScores(); };
       d.appendChild(b);
     });
-    const ex = document.createElement("div"); ex.className = "explain" + (answered[i] != null ? " show" : "");
-    if (answered[i] != null) ex.innerHTML = (answered[i] === item.a ? "✅ <b>Correct.</b> " : "❌ <b>Not quite.</b> ") + item.e;
-    d.appendChild(ex); box.appendChild(d);
+    if (picked != null) {
+      const ex = document.createElement("div"); ex.className = "explain";
+      ex.innerHTML = (picked === q.ans ? "✅ <b>Correct.</b> " : "❌ <b>Not quite.</b> ") + q.e;
+      d.appendChild(ex);
+    }
+    box.appendChild(d);
   });
-  const keys = Object.keys(answered);
-  const right = keys.filter(k => answered[k] === Q[k].a).length;
-  document.getElementById("scoreText").innerHTML = `Score: <b>${right}</b> / ${keys.length} answered (of 20)`;
 }
-document.querySelectorAll("#filters button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("#filters button").forEach(x => x.classList.remove("primary"));
-  b.classList.add("primary"); filter = b.dataset.f; renderQuiz();
-});
-document.getElementById("resetBtn").onclick = () => { answered = {}; renderQuiz(); };
 
-function drawAll() { drawElas(); drawQuota(); drawPC(); }
-drawAll(); renderQuiz();
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawAll);
+/* =========================================================
+   Page rendering
+   ========================================================= */
+let current = "L17";
+function show(id) {
+  current = id;
+  try { localStorage.setItem("econTab", id); } catch (e) {}
+  if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.id === id));
+  const L = LECTURES.find(x => x.id === id);
+  const main = document.getElementById("main");
+  main.innerHTML = `
+    <section>
+      <span class="tag">${L.id}</span>
+      <h2>${L.title}</h2>
+      <p class="lede">${L.lede}</p>
+      ${L.learn}
+      <h3>📺 Videos</h3>
+      <div class="vids">${L.videos.map(v => `<div><iframe class="video" src="https://www.youtube-nocookie.com/embed/${v.id}" title="${v.cap}" allowfullscreen loading="lazy"></iframe><div class="vcap">${v.cap}</div></div>`).join("")}</div>
+      <h3 id="quiz">✏️ Practice: 10 questions</h3>
+      <p class="lede">Questions tagged 📈 come with a graph to read. Click an answer to see the explanation.</p>
+      <div id="qbox"></div>
+      <div class="scorebar"><span id="lecScore"></span><button class="btn" id="resetBtn">Reset ${L.id}</button></div>
+    </section>`;
+  main.querySelectorAll("[id^=fig-]").forEach(el => el.appendChild(figNode(el.id.slice(4))));
+  if (id === "L19") { document.getElementById("taxR").oninput = drawTaxSim; drawTaxSim(); }
+  if (id === "L22") { document.getElementById("tarR").oninput = drawTariffSim; drawTariffSim(); }
+  document.getElementById("resetBtn").onclick = () => { ANS[L.id] = {}; renderQuiz(L); updateScores(); };
+  renderQuiz(L); updateScores();
+  window.scrollTo(0, 0);
+}
+
+document.getElementById("tabs").innerHTML = LECTURES.map(L => `<button data-id="${L.id}">${L.id} · ${L.title}<span class="mini"></span></button>`).join("");
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.id));
+let start = location.hash.slice(1);
+if (!LECTURES.some(L => L.id === start)) { try { start = localStorage.getItem("econTab") || "L17"; } catch (e) { start = "L17"; } }
+if (!LECTURES.some(L => L.id === start)) start = "L17";
+show(start);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => show(current));
 </script>
 </body>
 </html>
