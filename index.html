@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wysdom Econ 100</title>
-<link rel="icon" href="assets/wysdom-owl.png">
+<title>Econ 100 Study Hub</title>
 <style>
-  /* Wysdom design tokens (from the Wysdom app theme) */
+  /* Design tokens */
   :root, :root[data-theme="light"], :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg-1: #1A202C; --bg-2: #2D3748; --bg-3: #4A5568; --bg-4: #374151;
+    --bg-1: #000000; --bg-2: #2D3748; --bg-3: #4A5568; --bg-4: #374151;
     --surface: #1E293B; --option: #16213E;
     --ink: #F7FAFC; --ink-2: #E2E8F0; --muted: #A0AEC0; --line: #4A5568;
     --cyan: #69C9D0; --pink: #EE1D52; --accent: #00D4FF; --purple: #8B5CF6;
@@ -21,19 +20,18 @@
     --accent-soft: rgba(105, 201, 208, .12);
   }
   * { box-sizing: border-box; }
-  html { background: var(--bg-1); }
+  html { background: #000; }
   body { margin: 0; min-height: 100vh; color: var(--ink);
-    background: linear-gradient(135deg, var(--bg-1), var(--bg-2)) fixed;
+    background: #000;
     font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
   a { color: var(--accent); }
 
   /* Header */
-  header { position: sticky; top: 0; z-index: 5; background: rgba(26, 32, 44, .88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(0, 0, 0, .9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
   .hrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0 6px; flex-wrap: wrap; }
   .brand { display: flex; align-items: center; gap: 10px; }
-  .brand img { width: 34px; height: auto; filter: drop-shadow(0 0 8px rgba(105, 201, 208, .55)); }
-  .brand .name { font-size: 22px; font-weight: 800; letter-spacing: 1px; color: var(--ink); line-height: 1; }
+  .brand .name { font-size: 20px; font-weight: 800; letter-spacing: .01em; color: var(--ink); line-height: 1; }
   .brand .sub { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; }
   #overall { font-size: 13px; color: var(--muted); background: var(--bg-2); border: 1px solid var(--line); padding: 4px 12px; border-radius: 999px; }
   #overall b { color: var(--accent); }
@@ -103,7 +101,7 @@
   .goods .cell b { display: block; color: var(--accent); }
   .goods .cell span { color: var(--ink-2); font-size: 13px; }
 
-  /* Quiz (Wysdom multiple-choice style) */
+  /* Quiz (multiple-choice style) */
   .q { background: var(--card-grad); border-radius: 20px; padding: 20px; margin: 14px 0; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
   .q .qh { font-weight: 600; font-size: 17px; line-height: 1.5; margin-bottom: 12px; }
   .q .qn { display: inline-block; color: #fff; background: var(--grad-btn); font-size: 12px; font-weight: 800; padding: 1px 9px; border-radius: 999px; margin-right: 8px; vertical-align: 2px; }
@@ -116,7 +114,7 @@
   .q.pop { animation: pop .6s ease; }
   @keyframes pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
   .explain { margin-top: 10px; font-size: 15px; padding: 12px 14px; border-radius: 12px; background: rgba(15, 15, 35, .45); color: var(--ink-2); }
-  .scorebar { position: sticky; bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 18px; padding: 12px 16px; border: 2px solid transparent; border-radius: 18px; background: linear-gradient(rgba(26, 32, 44, .95), rgba(26, 32, 44, .95)) padding-box, var(--grad) border-box; box-shadow: 0 0 22px rgba(105, 201, 208, .22); }
+  .scorebar { position: sticky; bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 18px; padding: 12px 16px; border: 2px solid transparent; border-radius: 18px; background: linear-gradient(rgba(0, 0, 0, .95), rgba(0, 0, 0, .95)) padding-box, var(--grad) border-box; box-shadow: 0 0 22px rgba(105, 201, 208, .22); }
   .scorebar b { color: var(--accent); }
   .btn { font: inherit; font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); color: var(--ink); cursor: pointer; }
   .btn:hover { border-color: var(--cyan); }
@@ -129,7 +127,7 @@
 <header>
   <div class="wrap">
     <div class="hrow">
-      <div class="brand"><img src="assets/wysdom-owl.png" alt="Wysdom owl logo"><div><div class="name">WYSDOM</div><div class="sub">ECON 100 · L17–L23</div></div></div>
+      <div class="brand"><div><div class="name">Econ 100 Study Hub</div><div class="sub">LECTURES 17–23</div></div></div>
       <span id="overall"></span>
     </div>
     <div class="tabwrap" id="tabwrap">
@@ -141,7 +139,7 @@
   </div>
 </header>
 <main class="wrap" id="main"></main>
-<footer class="wrap">Styled with the Wysdom design. Built from Econ 100 lectures L17–L23 (Treado, Pitt). Graph numbers in the practice figures are made up for practice unless a lecture is cited. Videos are third-party YouTube content.</footer>
+<footer class="wrap">Built from Econ 100 lectures L17–L23 (Treado, Pitt). Graph numbers in the practice figures are made up for practice unless a lecture is cited. Videos are third-party YouTube content.</footer>
 
 <script>
 /* =========================================================
