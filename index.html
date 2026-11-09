@@ -37,6 +37,18 @@
   .tabs { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 10px; scrollbar-width: thin; }
   .tabs button { flex: 0 0 auto; font: inherit; font-size: 14px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; white-space: nowrap; }
   .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tabwrap { position: relative; }
+  .tabwrap::before, .tabwrap::after { content: ""; position: absolute; top: 0; bottom: 10px; width: 56px; pointer-events: none; transition: opacity .2s; opacity: 0; z-index: 1; }
+  .tabwrap::before { left: 0; background: linear-gradient(to right, var(--card) 35%, transparent); }
+  .tabwrap::after { right: 0; background: linear-gradient(to left, var(--card) 35%, transparent); }
+  .tabwrap.more-left::before, .tabwrap.more-right::after { opacity: 1; }
+  .tabarrow { position: absolute; top: 4px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent); font-size: 20px; line-height: 1; cursor: pointer; display: none; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  .tabarrow.left { left: 0; } .tabarrow.right { right: 0; }
+  .tabwrap.more-left .tabarrow.left, .tabwrap.more-right .tabarrow.right { display: block; }
+  .tabwrap.more-right .tabarrow.right { animation: nudge 1.4s ease-in-out 3; }
+  @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+  .tabhint { font-size: 12px; color: var(--muted); padding: 0 0 8px; display: none; }
+  .tabhint.show { display: block; }
   .tabs .mini { font-size: 12px; opacity: .8; margin-left: 4px; }
   section { padding: 24px 0 8px; }
   h2 { font-size: 26px; margin: 0 0 4px; }
@@ -94,7 +106,12 @@
       <h1>Econ 100 Study Hub · L17–L23</h1>
       <span id="overall"></span>
     </div>
-    <nav class="tabs" id="tabs"></nav>
+    <div class="tabwrap" id="tabwrap">
+      <button class="tabarrow left" id="tabL" aria-label="Scroll lectures left">‹</button>
+      <nav class="tabs" id="tabs"></nav>
+      <button class="tabarrow right" id="tabR" aria-label="Scroll lectures right">›</button>
+    </div>
+    <div class="tabhint" id="tabhint">← Swipe or use the arrows to see all lectures and the Final Quiz →</div>
   </div>
 </header>
 <main class="wrap" id="main"></main>
@@ -289,6 +306,29 @@ const FIGS = {
     cap: "Purple rectangle = tariff revenue. Red triangles = deadweight loss (left: production inefficiency, right: consumption inefficiency)."
   },
 
+  finalx: {
+    xMax: 100, yMax: 140, xl: "Quantity", yl: "Price ($)", alt: "Negative externality with rising external cost",
+    xt: [40, 60], yt: [40, 60, 80, 120], fy: v => "$" + v,
+    items: [
+      { t: "line", p: [[0, 120], [100, 20]], c: "d", lab: "D = MSB", lp: [100, 20], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 0], [100, 100]], c: "s", lab: "S = MPC", lp: [100, 100], dx: -4, dy: 16, anchor: "end" },
+      { t: "line", p: [[0, 0], [70, 140]], c: "x", lab: "MSC", lp: [70, 140], dx: 6, dy: 12 },
+      { t: "guide", p: [60, 60] }, { t: "guide", p: [40, 80] }, { t: "guide", p: [40, 40] },
+      { t: "dot", p: [60, 60], c: "k" }, { t: "dot", p: [40, 80], c: "x" }
+    ],
+    cap: "Demand: P = 120 − Q. Private cost: P = Q. Social cost: P = 2Q."
+  },
+  finalcost: {
+    xMax: 80, yMax: 20, xl: "Output (units)", yl: "$ per unit", alt: "MC and ATC curves",
+    xt: [20, 32, 60], yt: [6, 9, 14], fy: v => "$" + v,
+    items: [
+      { t: "path", p: Array.from({ length: 37 }, (_, i) => { const q = 8 + i * 2; return [q, 100 / q + 2 + 0.1 * q]; }), c: "d", lab: "ATC", lp: [80, 11.25], dx: -4, dy: -8, anchor: "end" },
+      { t: "line", p: [[0, 2], [80, 18]], c: "s", lab: "MC", lp: [80, 18], dx: -4, dy: -8, anchor: "end" },
+      { t: "guide", p: [20, 9] }, { t: "guide", p: [20, 6] }, { t: "guide", p: [60, 14] },
+      { t: "dot", p: [20, 9], c: "d" }, { t: "dot", p: [20, 6], c: "s" }
+    ],
+    cap: "Short-run cost curves for a firm."
+  },
   trucks: {
     xMax: 210, yMax: 60, xl: "Dorm rooms moved", yl: "ATC ($ per room)", alt: "Short-run and long-run ATC for three trucks",
     xt: [10, 30, 50, 100, 200], yt: [12, 19, 25, 35, 55], fy: v => "$" + v,
@@ -653,6 +693,43 @@ const LECTURES = [
     { k: "graph", fig: "trucks", q: "You expect to move 30 rooms. Which truck gives the lowest average cost?", o: ["Medium ($19 per room)", "Small ($20 per room)", "Large ($36.67 per room)", "They're all equal"], e: "At 30 rooms the ATCs are small $20, medium $19 and large $36.67. The long-run ATC picks the lowest, so choose the medium truck." },
     { k: "graph", fig: "trucks", q: "Long-run ATC falls from $25 (10 rooms) to $12 (100 rooms), then rises to $14 (200 rooms). This shows…", o: ["Economies of scale, then diseconomies of scale", "Diseconomies of scale, then economies of scale", "Constant returns to scale", "Diminishing marginal product only"], e: "Falling long-run ATC as output grows is economies of scale. Rising long-run ATC is diseconomies of scale. This is about choosing the scale (truck size), not adding workers to a fixed truck." }
   ]
+},
+{
+  id: "FINAL", title: "Final Quiz", final: true,
+  qs: [
+    { l: "L17", k: "concept", q: "A city puts free, open Wi-Fi in a park. With a few users it's fast. During a 20,000-person concert it barely works. During the concert, the Wi-Fi acts most like a…", o: ["Common resource: nobody can be kept off, but each extra user slows it for everyone", "Public good: it's free and provided by the city", "Private good: each device gets its own connection", "Club good: only people in the park can use it"], e: "Being free and open means it's non-excludable. Congestion makes it rival, since your streaming slows mine. Rival + non-excludable = common resource. Who provides it, and whether it's free, isn't what decides the category." },
+    { l: "L17", k: "concept", q: "A private company can easily charge for a toll bridge but would struggle to charge ships for a lighthouse. What's the key difference?", o: ["A bridge can block drivers who don't pay; a lighthouse can't stop ships from seeing its light", "Bridges are more useful than lighthouses", "Lighthouses are rival but bridges are not", "Ships are less willing to pay than drivers"], e: "This is excludability. A gate stops non-payers on a bridge. Light reaches every ship whether or not it paid, so ships can free ride and a private seller can't collect." },
+    { l: "L17", k: "concept", q: "A news site drops its paywall and lets anyone read for free, funded by ads. In economic terms, what changed about its articles?", o: ["They went from excludable to non-excludable; still non-rival, so they now act like a public good funded by ads", "They became rival", "They became a common resource", "Nothing; price doesn't affect the category"], e: "One more reader never used an article up (non-rival). Removing the paywall means the site no longer blocks non-payers, so it's non-excludable. Ads are a workaround to the free-rider problem: the site sells your attention instead of charging you." },
+
+    { l: "L18", k: "concept", q: "Four students share one grade on a group project. Everyone wants an A, but effort is costly. Why does the project often get less effort than the group as a whole would want?", o: ["Each student pays the full cost of their own effort but shares the benefit with everyone, so each is tempted to let others do the work", "Students don't care about grades", "Effort is a private good", "The grade is rival, so students compete for it"], e: "The shared grade works like a public good within the group: non-rival and non-excludable, since a slacker gets the same A. Each person's private payoff from extra effort is small, which is the free rider problem." },
+    { l: "L18", k: "concept", q: "A village's shared grazing field is overgrazed. It's divided into private plots, one per family. What most likely happens?", o: ["Grazing falls toward a sustainable level, because each family now bears the full cost of overgrazing its own plot", "Overgrazing gets worse because families compete", "Nothing changes, because grass is still a common resource", "Families stop grazing entirely"], e: "Property rights make the land excludable. Now if you overgraze, you ruin your own future grass, so the cost that used to be spread across the village falls entirely on you." },
+    { l: "L18", k: "concept", q: "Under a cap-and-trade system, a new technology lets factories cut emissions very cheaply. What happens to the allowance price and total emissions?", o: ["The allowance price falls, but total emissions stay the same because the cap fixes the total", "The price falls and total emissions fall", "The price rises because allowances are in demand", "Total emissions rise because allowances are cheaper"], e: "Demand for allowances drops because firms can cut emissions themselves cheaply, so the price falls. Supply is the cap, a vertical line, so the quantity of emissions doesn't move. Hitting the target just got cheaper. To cut emissions further, the government would have to lower the cap." },
+
+    { l: "L19", k: "graph", fig: "finalx", q: "In this market the external cost grows as output rises, so MSC gets steeper. Which per-unit tax moves the market to the efficient quantity?", o: ["$40, the external cost at the efficient quantity (40 units)", "$60, the external cost at the current quantity (60 units)", "$80, the efficient price", "$20, half the gap at 40 units"], e: "Efficient Q is where D = MSC: 120 − Q = 2Q, so Q = 40 and P = $80. At Q = 40, MSC is $80 and MPC is $40, so the external cost there is $40. A $40 tax makes supply Q + 40, which meets demand at Q = 40. A $60 tax would overcorrect to Q = 30. Size the tax to the harm at the <i>target</i> quantity." },
+    { l: "L19", k: "concept", q: "To cut pollution from factories, the government can (1) tax each ton of emissions or (2) require every factory to cut emissions by 20%. Why do economists often prefer the tax?", o: ["The tax lets factories that can cut cheaply cut more, so the same total reduction costs society less", "The rule always reduces more pollution", "The tax raises no revenue, so it's cheaper", "A uniform rule is always cheaper because it treats everyone equally"], e: "Cutting emissions costs different firms different amounts. Under a tax, each firm cuts until its cost of cutting one more ton equals the tax. Cheap cutters cut a lot and expensive cutters cut a little, so the total reduction happens at the lowest cost. A uniform rule forces expensive cutters to cut just as much." },
+    { l: "L19", k: "concept", q: "A tax exactly equal to the external cost is put on a good that people barely cut back on when prices rise (very inelastic demand). Quantity falls only 2%. Did the policy fail?", o: ["No. Buyers now face the full social cost, and the units they still buy are worth more to them than that cost", "Yes. The tax should be raised until quantity falls a lot", "Yes. Taxes never work on inelastic goods", "No, but only because it raised revenue"], e: "The goal is the efficient quantity, not the biggest possible drop. If people still value those units above their full social cost, keeping them is efficient. The tax did its job by making the price tell the truth." },
+
+    { l: "L20", k: "concept", q: "Your neighbor plants a flower garden that everyone on the street enjoys walking past. Without any outside help, the garden is likely to be…", o: ["Smaller than is best for the street, because the gardener counts only their own enjoyment", "Exactly the right size", "Larger than is best for the street", "Zero, because nobody pays for it"], e: "This is a positive externality. The neighbors' enjoyment is a marginal external benefit the gardener isn't paid for, so they stop at the point where their own benefit equals their cost. Social benefit is still above cost there." },
+    { l: "L20", k: "concept", q: "The government's college subsidy per student is twice the size of the external benefit. What happens?", o: ["Too many students enroll: for the last ones, the total benefit to society is less than the cost of educating them", "Enrollment reaches exactly the efficient level", "Fewer students enroll", "No harm, because more education is always better"], e: "The right subsidy equals the MEB. A bigger one pushes quantity past the point where MSB = MC, creating deadweight loss from <i>over</i>production. You can overcorrect a positive externality just as you can a negative one." },
+    { l: "L20", k: "concept", q: "Why is a vaccine requirement easier to justify economically than a requirement that everyone eat broccoli?", o: ["Your vaccine protects others too (a big external benefit); broccoli's benefit mostly stays with you", "Broccoli is cheaper than vaccines", "Vaccines are a private good", "Broccoli has negative externalities"], e: "Mandates make sense when individual choices ignore effects on others. Broccoli's benefit is almost entirely private, so your own choice already weighs it correctly. A vaccine's protection spills over to everyone around you." },
+
+    { l: "L21", k: "concept", q: "A surgeon types faster than her assistant. Should she type her own patient notes?", o: ["No. Every hour typing costs her an hour of surgery, so the assistant has the comparative advantage in typing", "Yes, because she's faster", "Yes, because absolute advantage decides who does what", "It doesn't matter who types"], e: "She has the absolute advantage in typing, but her opportunity cost is enormous: surgery she could have done. The assistant gives up much less per page typed. Specializing by comparative advantage leaves both better off." },
+    { l: "L21", k: "concept", q: "In one worker-day, Country A makes 10 cars or 20 tons of wheat. Country B makes 2 cars or 10 tons of wheat. Which trade pattern makes sense?", o: ["A exports cars and B exports wheat", "A exports both because it's more productive at both", "B exports cars and A exports wheat", "Neither should trade, since A is better at everything"], e: "Opportunity cost of a car: A gives up 2 tons of wheat and B gives up 5 tons. A is the cheaper car-maker. Opportunity cost of a ton of wheat: A gives up 0.5 car and B gives up 0.2 car, so B is the cheaper wheat-grower. Being better at everything doesn't make you cheaper at everything." },
+    { l: "L21", k: "concept", q: "Ana and Ben can each make either 4 shirts or 8 hats per hour, exactly the same. Can they gain from specializing based on comparative advantage?", o: ["No. With identical opportunity costs, neither is the cheaper producer of anything", "Yes. Specialization always creates gains", "Yes. Ana should make shirts and Ben hats", "No, because they have the same absolute advantage"], e: "Gains from comparative advantage come from <i>differences</i> in opportunity cost. Both give up 2 hats per shirt, so swapping tasks can't raise total output. (In real life, practice can create differences, but this model says no gain.)" },
+
+    { l: "L22", k: "concept", q: "The US puts a tariff on imported steel to protect steelworkers. Which group is most likely to be hurt in a way politicians overlook?", o: ["US companies that use steel, like car and appliance makers, whose costs rise", "Foreign steelworkers only", "US steel companies", "Nobody, since only imports are taxed"], e: "Steel is an input. Higher steel prices raise costs for every US firm that uses it, which can cost more jobs downstream than the tariff saves in steel." },
+    { l: "L22", k: "concept", q: "A country is a small buyer of bicycles, so its tariff can't change the $100 world price. It adds a $20 tariff. What happens to the price of bikes made by its OWN domestic firms?", o: ["It rises to about $120, since domestic firms can charge what the imported bike now costs", "It stays at $100, since tariffs only apply to imports", "It falls to $80", "It rises to $110, since they split the tariff"], e: "Imports now cost buyers $120. Domestic firms selling an identical bike have no reason to charge less, so the domestic price rises to $120 too. That's why consumers pay more on all units, not just imported ones, and why producers gain surplus." },
+    { l: "L22", k: "concept", q: "A politician says, 'Our tariffs are paid by foreign countries.' What's the best economic response?", o: ["Domestic importers pay the tariff to their own government, and much of it is passed to domestic buyers through higher prices", "Correct: foreign governments send the payments", "Foreign exporters always absorb the full tax", "Nobody pays, because it's a tax on goods, not people"], e: "The importing company writes the check, which is the statutory burden. Who bears the economic burden depends on how prices adjust, and usually much of it falls on domestic consumers. Foreign sellers absorb some only if the country is a big enough buyer to push the world price down." },
+
+    { l: "L23", k: "concept", q: "A coffee shop's monthly rent doubles. Bean prices and wages stay the same. What happens to the marginal cost of making one more latte?", o: ["It stays the same, because rent is fixed and doesn't change when you make one more latte", "It doubles", "It rises a little", "It falls"], e: "Marginal cost only counts costs that change with output: beans, milk, barista time. Rent is the same whether you make 100 lattes or 101. Average total cost rises, but MC doesn't." },
+    { l: "L23", k: "graph", fig: "finalcost", q: "At 20 units, MC is $6 and ATC is $9. If the firm makes one more unit, what happens to ATC?", o: ["It falls, because a unit that costs less than the average pulls the average down", "It rises, because MC is rising", "It stays the same", "It falls to $6"], e: "It works like a GPA: if your next class grade is below your average, your average drops, even if that grade is higher than your last one. MC is rising, but as long as it's below ATC, ATC keeps falling." },
+    { l: "L23", k: "graph", fig: "finalcost", q: "MC crosses ATC at about 32 units. What is true at that point?", o: ["ATC is at its lowest point", "MC is at its lowest point", "The firm's profit is maximized", "Fixed costs are zero"], e: "To the left, MC < ATC, which pulls the average down. To the right, MC > ATC, which pulls it up. The crossing is where the average stops falling and starts rising, which is the bottom of the U." },
+
+    { l: "Mixed", k: "concept", q: "What do overfishing of bluefin tuna and air pollution from a factory have in common?", o: ["Each user's or firm's actions impose costs on others that they don't pay for", "Both are public goods", "Both happen because prices are too high", "Both involve excludable goods"], e: "Each extra fish caught leaves fewer for everyone else, and each ton of pollution harms neighbors. Either way, the decision-maker ignores a cost borne by others, so the activity goes past the efficient level." },
+    { l: "Mixed", k: "concept", q: "A pollution tax and a tariff both raise prices and cut quantity. Why does the pollution tax usually INCREASE efficiency while the tariff usually REDUCES it?", o: ["The polluting market was producing too much before the tax; the import market was already efficient before the tariff", "Tariffs raise no revenue", "Pollution taxes are always smaller", "Tariffs only affect foreign producers"], e: "A tax moves a market toward efficiency only if the market started in the wrong place. Pollution meant MSC > MPC, so there was overproduction to fix. A competitive import market with no externality already had MSB = MSC, so the tariff pushes it away from efficiency and creates deadweight loss." },
+    { l: "Mixed", k: "concept", q: "Which would a free market most likely handle well with no government help?", o: ["Sneakers", "National defense", "Fishing in international waters", "Measles vaccination rates"], e: "Sneakers are a private good (rival and excludable) with no big externalities, so prices capture the costs and benefits. The others involve a public good, a common resource or a positive externality." },
+    { l: "Mixed", k: "concept", q: "Public goods tend to be under-provided and common resources tend to be over-used. What feature do they share that causes both problems?", o: ["Non-excludability: people can't be made to pay, so they free ride on public goods and overuse common resources", "Rivalry", "Government ownership", "High production costs"], e: "If you can't exclude, you can't charge. For a non-rival public good, nobody pays, so too little is made. For a rival common resource, nobody pays for what they use up, so too much is taken. One root cause leads to opposite symptoms." }
+  ]
 }
 ];
 
@@ -714,7 +791,9 @@ function seeded(str) { let h = 2166136261; for (const c of str) h = Math.imul(h 
 function shuffle(arr, rnd) { for (let j = arr.length - 1; j > 0; j--) { const r = Math.floor(rnd() * (j + 1)); [arr[j], arr[r]] = [arr[r], arr[j]]; } return arr; }
 LECTURES.forEach(L => {
   // spread correct answers evenly across A–D within each lecture
-  const lr = seeded(L.id), slots = shuffle([0, 1, 2, 3, 0, 1, 2, 3, ...shuffle([0, 1, 2, 3], lr).slice(0, 2)], lr);
+  const lr = seeded(L.id), n = L.qs.length, base = [];
+  for (let k = 0; k < Math.floor(n / 4); k++) base.push(0, 1, 2, 3);
+  const slots = shuffle([...base, ...shuffle([0, 1, 2, 3], lr).slice(0, n % 4)], lr);
   L.qs.forEach((q, i) => {
     const wrong = shuffle(q.o.slice(1), seeded(L.id + i));
     q.ans = slots[i]; q.opts = wrong.slice(); q.opts.splice(q.ans, 0, q.o[0]);
@@ -723,6 +802,7 @@ LECTURES.forEach(L => {
 
 const ANS = {};
 LECTURES.forEach(L => ANS[L.id] = {});
+{ const F = LECTURES.find(L => L.final); shuffle(F.qs, seeded("final-order")); }
 
 function lectureScore(L) {
   const a = ANS[L.id], keys = Object.keys(a);
@@ -733,18 +813,30 @@ function updateScores() {
   LECTURES.forEach(L => {
     const s = lectureScore(L); r += s.right; d += s.done;
     const m = document.querySelector(`#tabs button[data-id="${L.id}"] .mini`);
-    if (m) m.textContent = s.done ? `${s.right}/10` : "";
+    if (m) m.textContent = s.done ? `${s.right}/${L.qs.length}` : "";
   });
-  document.getElementById("overall").innerHTML = `Overall: <b>${r}</b> correct of ${d} answered · 70 total`;
+  document.getElementById("overall").innerHTML = `Overall: <b>${r}</b> correct of ${d} answered · ${LECTURES.reduce((t, L) => t + L.qs.length, 0)} total`;
   const cur = LECTURES.find(L => L.id === current), el = document.getElementById("lecScore");
-  if (cur && el) { const s = lectureScore(cur); el.innerHTML = `${cur.id} score: <b>${s.right}</b> / ${s.done} answered (of 10)`; }
+  if (cur && el) { const s = lectureScore(cur); el.innerHTML = `${cur.final ? "Final" : cur.id} score: <b>${s.right}</b> / ${s.done} answered (of ${cur.qs.length})`; }
+  const bd = document.getElementById("breakdown");
+  if (cur && cur.final && bd) {
+    const s = lectureScore(cur);
+    if (s.done < cur.qs.length) { bd.innerHTML = ""; bd.className = ""; return; }
+    bd.className = "card";
+    const groups = {};
+    cur.qs.forEach((q, i) => { const g = groups[q.l] ||= { r: 0, n: 0 }; g.n++; if (ANS[cur.id][i] === q.ans) g.r++; });
+    const weak = Object.entries(groups).filter(([, g]) => g.r < g.n).map(([l]) => l);
+    bd.innerHTML = `<h3>📊 Your results by section</h3><div class="tblwrap"><table><tr><th>Section</th><th class="num">Score</th></tr>` +
+      Object.entries(groups).sort(([a], [b]) => (a === "Mixed") - (b === "Mixed") || a.localeCompare(b)).map(([l, g]) => `<tr><td>${l === "Mixed" ? "Mixed (connects topics)" : l + " · " + LECTURES.find(x => x.id === l).title}</td><td class="num">${g.r === g.n ? "✅ " : ""}${g.r} / ${g.n}</td></tr>`).join("") +
+      `</table></div><p>${weak.length ? "Review: <b>" + weak.join(", ") + "</b>. Re-read the 💡 boxes in those tabs, then reset and retry." : "Perfect score. You've got the intuition down."}</p>`;
+  }
 }
 
 function renderQuiz(L) {
   const box = document.getElementById("qbox"); box.innerHTML = "";
   L.qs.forEach((q, i) => {
     const d = document.createElement("div"); d.className = "q";
-    d.innerHTML = `<div class="qh"><span class="qn">Q${i + 1}</span>${q.q}<span class="kind">${q.k === "graph" ? "📈 graph" : "concept"}</span></div>`;
+    d.innerHTML = `<div class="qh"><span class="qn">Q${i + 1}</span>${q.q}<span class="kind">${q.k === "graph" ? "📈 graph" : "concept"}</span>${q.l ? `<span class="kind">${q.l}</span>` : ""}</div>`;
     if (q.fig) d.appendChild(figNode(q.fig));
     const picked = ANS[L.id][i];
     q.opts.forEach((opt, j) => {
@@ -775,8 +867,25 @@ function show(id) {
   try { localStorage.setItem("econTab", id); } catch (e) {}
   if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.id === id));
+  const onBtn = document.querySelector(`#tabs button[data-id="${id}"]`);
+  if (onBtn) onBtn.scrollIntoView({ block: "nearest", inline: "nearest" });
+  if (typeof updateTabCue === "function") updateTabCue();
   const L = LECTURES.find(x => x.id === id);
   const main = document.getElementById("main");
+  if (L.final) {
+    main.innerHTML = `
+    <section>
+      <span class="tag">L17–L23</span>
+      <h2>🏁 Final Quiz</h2>
+      <p class="lede">25 new questions: 3 from each lecture plus 4 that connect topics. These are fresh scenarios, not repeats of the notes, so you'll have to reason them out. Try it without looking back at the tabs. Your section-by-section results appear when you finish.</p>
+      <div id="qbox"></div>
+      <div id="breakdown"></div>
+      <div class="scorebar"><span id="lecScore"></span><button class="btn" id="resetBtn">Reset final</button></div>
+    </section>`;
+    document.getElementById("resetBtn").onclick = () => { ANS[L.id] = {}; renderQuiz(L); updateScores(); };
+    renderQuiz(L); updateScores(); window.scrollTo(0, 0);
+    return;
+  }
   main.innerHTML = `
     <section>
       <span class="tag">${L.id}</span>
@@ -798,12 +907,24 @@ function show(id) {
   window.scrollTo(0, 0);
 }
 
-document.getElementById("tabs").innerHTML = LECTURES.map(L => `<button data-id="${L.id}">${L.id} · ${L.title}<span class="mini"></span></button>`).join("");
+document.getElementById("tabs").innerHTML = LECTURES.map(L => `<button data-id="${L.id}">${L.final ? "🏁 Final Quiz" : L.id + " · " + L.title}<span class="mini"></span></button>`).join("");
 document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.id));
+const tabsEl = document.getElementById("tabs"), tabWrap = document.getElementById("tabwrap");
+function updateTabCue() {
+  const max = tabsEl.scrollWidth - tabsEl.clientWidth;
+  tabWrap.classList.toggle("more-left", tabsEl.scrollLeft > 4);
+  tabWrap.classList.toggle("more-right", tabsEl.scrollLeft < max - 4);
+  document.getElementById("tabhint").classList.toggle("show", max > 4);
+}
+tabsEl.addEventListener("scroll", updateTabCue, { passive: true });
+window.addEventListener("resize", updateTabCue);
+document.getElementById("tabL").onclick = () => tabsEl.scrollBy({ left: -tabsEl.clientWidth * 0.7, behavior: "smooth" });
+document.getElementById("tabR").onclick = () => tabsEl.scrollBy({ left: tabsEl.clientWidth * 0.7, behavior: "smooth" });
 let start = location.hash.slice(1);
 if (!LECTURES.some(L => L.id === start)) { try { start = localStorage.getItem("econTab") || "L17"; } catch (e) { start = "L17"; } }
 if (!LECTURES.some(L => L.id === start)) start = "L17";
 show(start);
+updateTabCue();
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => show(current));
 </script>
 </body>
